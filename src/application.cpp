@@ -51,9 +51,9 @@ class Application {
 		try {
 			ShaderBuilder defaultBuilder;
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
-									"shaders/shader_vert.glsl");
+									"shaders/new_shader_vert.glsl");
 			defaultBuilder.addStage(GL_FRAGMENT_SHADER,
-									"shaders/shader_frag.glsl");
+									"shaders/new_shader_frag.glsl");
 			m_defaultShader = defaultBuilder.build();
 
 			ShaderBuilder shadowBuilder;
@@ -117,6 +117,22 @@ class Application {
 			} else {
 				glUniform1i(4, GL_FALSE);
 			}
+			m_defaultShader.bind();
+
+			//Newly Added 3.27.2023
+			// Set light properties
+			glUniform3fv(5, 1, glm::value_ptr(m_lightPosition));
+			glUniform3fv(6, 1, glm::value_ptr(m_lightColor));
+
+			// Set material properties
+			glUniform3fv(8, 1, glm::value_ptr(m_materialAmbient));
+			glUniform3fv(9, 1, glm::value_ptr(m_materialDiffuse));
+			glUniform3fv(10, 1, glm::value_ptr(m_materialSpecular));
+			glUniform1f(11, m_materialShininess);
+
+			// Set view position
+			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
+			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
 
 			m_mesh.draw();
 
@@ -180,6 +196,19 @@ class Application {
 	glm::mat4 m_viewMatrix =
 		glm::lookAt(glm::vec3(-1, 1, -1), glm::vec3(0), glm::vec3(0, 1, 0));
 	glm::mat4 m_modelMatrix{1.0f};
+
+
+	// Light properties
+	
+	glm::vec3 m_lightPosition = glm::vec3(20.0f, 2.0f, 2.0f);
+	glm::vec3 m_lightColor = glm::vec3(3.0f, 1.0f, 1.0f);
+
+	// Material properties
+	glm::vec3 m_materialAmbient = glm::vec3(0.1f, 0.1f, 0.1f);
+	glm::vec3 m_materialDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec3 m_materialSpecular = glm::vec3(0.7f, 0.7f, 0.7f);
+	float m_materialShininess = 3.0f;
+	glm::vec4 texColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 };
 
 int main() {
