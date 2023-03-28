@@ -26,6 +26,16 @@ DISABLE_WARNINGS_POP()
 
 class Application {
   public:
+	  int startMouseX = 0;
+	  int startMouseY = 0;
+
+	  bool mouse0Held = false;
+	  bool goingForwards = false;
+
+	  int endMouseX = 0;
+	  int endMouseY = 0;
+
+
 	Application()
 		: m_window("Final Project", glm::ivec2(1024, 1024),
 				   OpenGLVersion::GL45),
@@ -72,11 +82,18 @@ class Application {
 	}
 
 	void update() {
+		
 		int dummyInteger = 0;  // Initialized to 0
 		while (!m_window.shouldClose()) {
 			// This is your game loop
 			// Put your real-time logic and rendering in here
 			m_window.updateInput();
+			//glm::lookAt()
+			if (goingForwards) {
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.01, 0.0, 0.0));
+				//m_viewMatrix = glm::translate(m_viewMatrix, glm::vec3(0.01, 0.0, 0.0));
+			}
+			m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(-2, 0, 0, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 
 			// Use ImGui for easy input/output of ints, floats, strings, etc...
 			ImGui::Begin("Window");
@@ -94,6 +111,7 @@ class Application {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// ...
+			
 			glEnable(GL_DEPTH_TEST);
 
 			const glm::mat4 mvpMatrix =
@@ -107,8 +125,7 @@ class Application {
 			m_defaultShader.bind();
 			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
 			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
-			glUniformMatrix3fv(2, 1, GL_FALSE,
-							   glm::value_ptr(normalModelMatrix));
+			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 			if (m_mesh.hasTextureCoords()) {
 				// m_texture.bind(GL_TEXTURE0);
 				m_mesh.kdTexture.value().bind(GL_TEXTURE0);
@@ -117,6 +134,8 @@ class Application {
 			} else {
 				glUniform1i(4, GL_FALSE);
 			}
+
+
 
 			m_mesh.draw();
 
@@ -131,6 +150,9 @@ class Application {
 	// keys pressed, like shift or control
 	void onKeyPressed(int key, int mods) {
 		std::cout << "Key pressed: " << key << std::endl;
+		if (key == 87) { // forward
+			goingForwards = true;
+		}
 	}
 
 	// In here you can handle key releases
@@ -139,6 +161,9 @@ class Application {
 	// keys pressed, like shift or control
 	void onKeyReleased(int key, int mods) {
 		std::cout << "Key released: " << key << std::endl;
+		if (key == 87) {
+			goingForwards = false;
+		}
 	}
 
 	// If the mouse is moved this function will be called with the x, y
@@ -146,6 +171,20 @@ class Application {
 	void onMouseMove(const glm::dvec2& cursorPos) {
 		std::cout << "Mouse at position: " << cursorPos.x << " " << cursorPos.y
 				  << std::endl;
+		if (mouse0Held) {
+			startMouseX = endMouseX;
+			startMouseY = endMouseY;
+			endMouseX = cursorPos.x;
+			endMouseY = cursorPos.y;
+
+			m_modelMatrix = glm::rotate(m_modelMatrix, glm::radians(-(startMouseX - endMouseX) / 5.0f), glm::vec3(0, 1, 0));
+			//m_viewMatrix = glm::rotate(m_viewMatrix, glm::radians(-(startMouseX - endMouseX) / 5.0f), glm::vec3(0, 1, 0));
+			//m_modelMatrix = glm::rotate(m_modelMatrix, glm::radians(-(startMouseY - endMouseY) / 5.0f), glm::vec3(0, 0, 1));
+		}
+		else {
+			endMouseX = cursorPos.x;
+			endMouseY = cursorPos.y;
+		}
 	}
 
 	// If one of the mouse buttons is pressed this function will be called
@@ -154,6 +193,9 @@ class Application {
 	// buttons pressed
 	void onMouseClicked(int button, int mods) {
 		std::cout << "Pressed mouse button: " << button << std::endl;
+		if (button == 0) {
+			mouse0Held = true;
+		}
 	}
 
 	// If one of the mouse buttons is released this function will be called
@@ -162,7 +204,11 @@ class Application {
 	// buttons pressed
 	void onMouseReleased(int button, int mods) {
 		std::cout << "Released mouse button: " << button << std::endl;
+		if (button == 0) {
+			mouse0Held = false;
+		}
 	}
+
 
   private:
 	Window m_window;
@@ -178,7 +224,7 @@ class Application {
 	glm::mat4 m_projectionMatrix =
 		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 30.0f);
 	glm::mat4 m_viewMatrix =
-		glm::lookAt(glm::vec3(-1, 1, -1), glm::vec3(0), glm::vec3(0, 1, 0));
+		glm::lookAt(glm::vec3(0, 0, -2), glm::vec3(0), glm::vec3(0, 1, 0));
 	glm::mat4 m_modelMatrix{1.0f};
 };
 
