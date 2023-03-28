@@ -31,6 +31,7 @@ class Application {
 
 	  bool mouse0Held = false;
 	  bool goingForwards = false;
+	  bool goingBackwards = false;
 
 	  int endMouseX = 0;
 	  int endMouseY = 0;
@@ -39,7 +40,8 @@ class Application {
 	Application()
 		: m_window("Final Project", glm::ivec2(1024, 1024),
 				   OpenGLVersion::GL45),
-		  m_mesh("resources/cube-textured.obj"),
+		m_mesh2("resources/cube-textured.obj"),
+		m_mesh("resources/dragon.obj"),
 		  m_texture("resources/checkerboard.png") {
 		m_window.registerKeyCallback(
 			[this](int key, int scancode, int action, int mods) {
@@ -93,7 +95,11 @@ class Application {
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.01, 0.0, 0.0));
 				//m_viewMatrix = glm::translate(m_viewMatrix, glm::vec3(0.01, 0.0, 0.0));
 			}
-			m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(-2, 0, 0, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
+			else if (goingBackwards) {
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(-0.01, 0.0, 0.0));
+
+			}
+			m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(-2, 1, 0, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 
 			// Use ImGui for easy input/output of ints, floats, strings, etc...
 			ImGui::Begin("Window");
@@ -105,6 +111,7 @@ class Application {
 						dummyInteger);	// Use C printf formatting rules (%i is
 										// a signed integer)
 			ImGui::End();
+			m_modelMatrix2 = glm::rotate(m_modelMatrix2, glm::radians((float)dummyInteger), glm::vec3(0, 1, 0));
 
 			// Clear the screen
 			glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -134,6 +141,15 @@ class Application {
 			} else {
 				glUniform1i(4, GL_FALSE);
 			}
+			if (m_mesh2.hasTextureCoords()) {
+				// m_texture.bind(GL_TEXTURE0);
+				m_mesh2.kdTexture.value().bind(GL_TEXTURE0);
+				glUniform1i(3, 0);
+				glUniform1i(4, GL_TRUE);
+			}
+			else {
+				glUniform1i(4, GL_FALSE);
+			}
 			m_defaultShader.bind();
 
 			//Newly Added 3.27.2023
@@ -154,6 +170,16 @@ class Application {
 
 
 			m_mesh.draw();
+			//glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(glm::vec4{1.0}));
+			const glm::mat4 mvpMatrix2 =
+				m_projectionMatrix * m_viewMatrix * m_modelMatrix2;
+			const glm::mat3 normalModelMatrix2 =
+				glm::inverseTranspose(glm::mat3(m_modelMatrix2));
+			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix2));
+			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix2));
+			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix2));
+
+			m_mesh2.draw();
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
@@ -169,6 +195,9 @@ class Application {
 		if (key == 87) { // forward
 			goingForwards = true;
 		}
+		if (key == 83) {
+			goingBackwards = true;
+		}
 	}
 
 	// In here you can handle key releases
@@ -179,6 +208,9 @@ class Application {
 		std::cout << "Key released: " << key << std::endl;
 		if (key == 87) {
 			goingForwards = false;
+		}
+		if (key == 83) {
+			goingBackwards = false;
 		}
 	}
 
@@ -234,6 +266,8 @@ class Application {
 	Shader m_shadowShader;
 
 	GPUMesh m_mesh;
+	GPUMesh m_mesh2;
+
 	Texture m_texture;
 
 	// Projection and view matrices for you to fill in and use
@@ -241,7 +275,8 @@ class Application {
 		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 30.0f);
 	glm::mat4 m_viewMatrix =
 		glm::lookAt(glm::vec3(0, 0, -2), glm::vec3(0), glm::vec3(0, 1, 0));
-	glm::mat4 m_modelMatrix{1.0f};
+	glm::mat4 m_modelMatrix{ 1.0f };
+	glm::mat4 m_modelMatrix2{1.0f};
 
 
 	// Light properties
