@@ -42,6 +42,8 @@ void main()
     vec4 texColor = vec4(1.0);
 if (hasTexCoords) {
     texColor = texture(colorMap, fragTexCoord);
+} else {
+    texColor = vec4(1.0, 1.0, 1.0, 1.0);
 }
 fragColor = vec4(finalColor * texColor.rgb, 1);
 

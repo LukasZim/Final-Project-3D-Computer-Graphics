@@ -38,11 +38,14 @@ class Application {
 
 
 	Application()
-		: m_window("Final Project", glm::ivec2(1024, 1024),
-				   OpenGLVersion::GL45),
+		: 
+		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
 		m_mesh2("resources/cube-textured.obj"),
 		m_mesh("resources/dragon.obj"),
-		  m_texture("resources/checkerboard.png") {
+		m_mesh_ground("resources/test/test.obj"),
+		m_texture("resources/checkerboard.png") ,
+		m_texture_ground_1("resources/test/coral_fort_wall_01_diff_1k.jpg") ,
+		m_texture_ground_2("resources/test/forest_ground_04_diff_1k.jpg") {
 		m_window.registerKeyCallback(
 			[this](int key, int scancode, int action, int mods) {
 				if (action == GLFW_PRESS)
@@ -134,7 +137,7 @@ class Application {
 			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 			if (m_mesh.hasTextureCoords()) {
-				// m_texture.bind(GL_TEXTURE0);
+				m_texture.bind(GL_TEXTURE0);
 				m_mesh.kdTexture.value().bind(GL_TEXTURE0);
 				glUniform1i(3, 0);
 				glUniform1i(4, GL_TRUE);
@@ -142,9 +145,9 @@ class Application {
 				glUniform1i(4, GL_FALSE);
 			}
 			if (m_mesh2.hasTextureCoords()) {
-				// m_texture.bind(GL_TEXTURE0);
-				m_mesh2.kdTexture.value().bind(GL_TEXTURE0);
-				glUniform1i(3, 0);
+				m_texture_ground_1.bind(GL_TEXTURE1);
+				//m_mesh2.kdTexture.value().bind(GL_TEXTURE1);
+				glUniform1i(3, 1);
 				glUniform1i(4, GL_TRUE);
 			}
 			else {
@@ -180,6 +183,8 @@ class Application {
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix2));
 
 			m_mesh2.draw();
+
+			m_mesh_ground.draw();
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
@@ -267,8 +272,11 @@ class Application {
 
 	GPUMesh m_mesh;
 	GPUMesh m_mesh2;
+	GPUMesh m_mesh_ground;
 
 	Texture m_texture;
+	Texture m_texture_ground_1;
+	Texture m_texture_ground_2;
 
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
@@ -282,7 +290,7 @@ class Application {
 	// Light properties
 	
 	glm::vec3 m_lightPosition = glm::vec3(20.0f, 2.0f, 2.0f);
-	glm::vec3 m_lightColor = glm::vec3(3.0f, 1.0f, 1.0f);
+	glm::vec3 m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	// Material properties
 	glm::vec3 m_materialAmbient = glm::vec3(0.1f, 0.1f, 0.1f);
