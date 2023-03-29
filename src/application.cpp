@@ -67,7 +67,7 @@ class Application {
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
 									"shaders/new_shader_vert.glsl");
 			defaultBuilder.addStage(GL_FRAGMENT_SHADER,
-									"shaders/toon_shader_frag.glsl");
+									"shaders/new_shader_frag.glsl");
 			m_defaultShader = defaultBuilder.build();
 
 			ShaderBuilder shadowBuilder;
@@ -289,11 +289,8 @@ class Application {
 
 	// Light properties
 	
-<<<<<<< Updated upstream
+
 	glm::vec3 m_lightPosition = glm::vec3(20.0f, 2.0f, 2.0f);
-=======
-	glm::vec3 m_lightPosition = glm::vec3(20.0f, 2.0f, 10.0f);
->>>>>>> Stashed changes
 	glm::vec3 m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	// Material properties
