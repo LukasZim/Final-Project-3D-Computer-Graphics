@@ -1,0 +1,70 @@
+newmtl default
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/wnd2.jpg
+
+newmtl default_trees
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/trr1b.jpg
+
+newmtl default_doors
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/dr1.jpg
+
+newmtl default_grass
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/gr1b2.jpg
+
+newmtl default_dinnig_set
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/1pa.jpg
+
+newmtl default_floors
+d 1
+Ns 1
+Ni 0
+Ka 0 0 0
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/lt.jpg
+
+newmtl default_pool
+d 0.5
+Ns 1
+Ni 0
+Ka 1 1 1
+Kd 1 1 1
+Ks 1 1 1
+Km 0
+map_Kd /Maps/1ab2.jpg
+
