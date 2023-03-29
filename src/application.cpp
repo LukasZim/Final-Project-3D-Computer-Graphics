@@ -10,7 +10,6 @@ DISABLE_WARNINGS_PUSH()
 // Include glad before glfw3
 #include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -68,7 +67,7 @@ class Application {
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
 									"shaders/new_shader_vert.glsl");
 			defaultBuilder.addStage(GL_FRAGMENT_SHADER,
-									"shaders/new_shader_frag.glsl");
+									"shaders/toon_shader_frag.glsl");
 			m_defaultShader = defaultBuilder.build();
 
 			ShaderBuilder shadowBuilder;
@@ -164,12 +163,13 @@ class Application {
 			glUniform3fv(8, 1, glm::value_ptr(m_materialAmbient));
 			glUniform3fv(9, 1, glm::value_ptr(m_materialDiffuse));
 			glUniform3fv(10, 1, glm::value_ptr(m_materialSpecular));
-			glUniform1f(11, m_materialShininess);
-
+			glUniform1f(11, materialShininess);
+			glUniform4fv(12, 1, glm::value_ptr(texColor));
+			
 			// Set view position
 			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
 			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
-
+			
 
 
 			m_mesh.draw();
@@ -289,15 +289,20 @@ class Application {
 
 	// Light properties
 	
+<<<<<<< Updated upstream
 	glm::vec3 m_lightPosition = glm::vec3(20.0f, 2.0f, 2.0f);
+=======
+	glm::vec3 m_lightPosition = glm::vec3(20.0f, 2.0f, 10.0f);
+>>>>>>> Stashed changes
 	glm::vec3 m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	// Material properties
 	glm::vec3 m_materialAmbient = glm::vec3(0.1f, 0.1f, 0.1f);
 	glm::vec3 m_materialDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
 	glm::vec3 m_materialSpecular = glm::vec3(0.7f, 0.7f, 0.7f);
-	float m_materialShininess = 3.0f;
+	float materialShininess = 0.1f;
 	glm::vec4 texColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	float ambientIntensity = 0.1f;
 };
 
 int main() {

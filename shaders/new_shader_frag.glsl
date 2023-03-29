@@ -10,12 +10,13 @@ layout(location = 7) uniform vec3 viewPosition;
 layout(location = 8) uniform vec3 materialAmbient;
 layout(location = 9) uniform vec3 materialDiffuse;
 layout(location = 10) uniform vec3 materialSpecular;
-layout(location = 11) uniform float materialShininess;
+layout(location = 11) uniform float m_materialShininess;
+layout(location = 12) in vec4 texColor;
 
 in vec3 fragPosition;
 in vec3 fragNormal;
 in vec2 fragTexCoord;
-in vec4 texColor;
+
 
 layout(location = 0) out vec4 fragColor;
 
@@ -35,7 +36,7 @@ void main()
     // Specular component
     vec3 R = reflect(-L, N);
     vec3 V = normalize(viewPosition - fragPosition);
-    float specularFactor = pow(max(dot(R, V), 1.0), materialShininess);
+    float specularFactor = pow(max(dot(R, V), 1.0), m_materialShininess);
     specular = materialSpecular * specularFactor * lightColor;
     
     vec3 finalColor = ambient + diffuse + specular;
