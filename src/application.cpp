@@ -1,6 +1,7 @@
 // #include "Image.h"
 #include "mesh.h"
 #include "texture.h"
+#include "framebuffer.cpp"
 // Always include window first (because it includes glfw, which includes GL
 // which needs to be included AFTER glew). Can't wait for modules to fix this
 // stuff...
@@ -9,6 +10,7 @@ DISABLE_WARNINGS_PUSH()
 #include <glad/glad.h>
 // Include glad before glfw3
 #include <GLFW/glfw3.h>
+#include <GL/GLU.h>
 #include <imgui/imgui.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
@@ -62,7 +64,11 @@ class Application {
 					onMouseReleased(button, mods);
 			});
 
+		fbo.createDepthTexture();
+
+
 		try {
+			//Phong Shader
 			ShaderBuilder defaultBuilder;
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
 									"shaders/new_shader_vert.glsl");
@@ -70,10 +76,20 @@ class Application {
 									"shaders/new_shader_frag.glsl");
 			m_defaultShader = defaultBuilder.build();
 
+			//Shadow Shader
 			ShaderBuilder shadowBuilder;
 			shadowBuilder.addStage(GL_VERTEX_SHADER,
 								   "shaders/shadow_vert.glsl");
+			shadowBuilder.addStage(GL_FRAGMENT_SHADER, "shaders/shadow_frag.glsl");
 			m_shadowShader = shadowBuilder.build();
+
+			//Toon Shader 
+			ShaderBuilder toonBuilder;
+			toonBuilder.addStage(GL_FRAGMENT_SHADER,
+				"shaders/toon_shader_frag.glsl");
+			toonBuilder.addStage(GL_VERTEX_SHADER, 
+				"shaders/new_shader_vert.glsl");
+			m_toonShader = toonBuilder.build();
 
 			// Any new shaders can be added below in similar fashion.
 			// ==> Don't forget to reconfigure CMake when you do!
@@ -137,7 +153,8 @@ class Application {
 			}
 
 			m_defaultShader.bind();
-
+			//m_shadowShader.bind();
+			//m_toonShader.bind();
 			//Newly Added 3.27.2023
 			// Set light properties
 			glUniform3fv(5, 1, glm::value_ptr(m_lightPosition));
@@ -181,6 +198,14 @@ class Application {
 				glUniform1i(4, GL_FALSE);
 			}
 
+			glUniformMatrix4fv(15, 1, GL_FALSE, &depthMVP[0][0]);
+
+			
+			glViewport(0, 0, 1024, 1024);
+			glBindFramebuffer(GL_FRAMEBUFFER, fb);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			fbo.unbind();
+			
 			m_mesh2.draw();
 
 			m_mesh_ground.draw();
@@ -268,6 +293,7 @@ class Application {
 	// Shader for default rendering and for depth rendering
 	Shader m_defaultShader;
 	Shader m_shadowShader;
+	Shader m_toonShader;
 
 	GPUMesh m_mesh;
 	GPUMesh m_mesh2;
@@ -299,6 +325,21 @@ class Application {
 	float materialShininess = 0.1f;
 	glm::vec4 texColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	float ambientIntensity = 0.1f;
+
+
+	//Shadow Mapping
+	Framebuffer fbo = Framebuffer();
+	GLuint fb = fbo.getFramebufferID();
+	GLuint dpm = fbo.getDepthMapTextureID();
+
+	glm::vec3 lightInvDir = glm::vec3(0.5f, 2, 2);
+	// Compute the MVP matrix from the light's point of view
+	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 20);
+	glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	glm::mat4 depthModelMatrix = glm::mat4(1.0);
+	glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
+
+
 };
 
 int main() {
