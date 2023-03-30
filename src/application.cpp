@@ -31,18 +31,21 @@ class Application {
 	  bool mouse0Held = false;
 	  bool goingForwards = false;
 	  bool goingBackwards = false;
+	  bool topviewEnabled = false;
 
 	  int endMouseX = 0;
 	  int endMouseY = 0;
+
+
 
 
 	Application()
 		: 
 		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
 		m_mesh2("resources/cube-textured.obj"),
-		m_mesh("resources/dragon.obj"),
+		m_mesh("resources/Gunship_Model/gunship1.obj"),
 		m_mesh_ground("resources/test/test.obj"),
-		m_texture("resources/checkerboard.png") ,
+		m_texture("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png") ,
 		m_texture_ground_1("resources/test/coral_fort_wall_01_diff_1k.jpg") ,
 		m_texture_ground_2("resources/test/forest_ground_04_diff_1k.jpg") {
 		m_window.registerKeyCallback(
@@ -102,6 +105,7 @@ class Application {
 			ImGui::Text("Value is: %i",
 				dummyInteger);	// Use C printf formatting rules (%i is
 			// a signed integer)
+			ImGui::Checkbox("Top View", &topviewEnabled);
 			ImGui::End();
 
 
@@ -127,16 +131,16 @@ class Application {
 			// movement logic main character/mesh_1
 			m_defaultShader.bind();
 			if (goingForwards) {
-				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.01, 0.0, 0.0));
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, -0.1));
 			}
 			else if (goingBackwards) {
-				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(-0.01, 0.0, 0.0));
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, 0.1));
 			}
-			m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(-2, 1, 0, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
-
+			m_viewMatrixForward = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 3, 6, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
+			m_viewMatrix2 = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 6, 0, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 
 			// ****** start mesh_1 logic ****** 
-			const glm::mat4 mvpMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
+			const glm::mat4 mvpMatrix = m_projectionMatrix * m_viewMatrixForward * m_modelMatrix;
 
 			// https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html
 			const glm::mat3 normalModelMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
@@ -151,7 +155,7 @@ class Application {
 			}
 
 			// Set view position
-			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
+			glm::vec3 viewPosition = glm::vec3(m_viewMatrixForward[3]);
 			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
 			
 			// give matrices to the shader
@@ -165,7 +169,7 @@ class Application {
 			// ****** start mesh_2 logic ****** 
 			m_modelMatrix2 = glm::rotate(m_modelMatrix2, glm::radians((float)dummyInteger), glm::vec3(0, 1, 0));
 
-			const glm::mat4 mvpMatrix2 = m_projectionMatrix * m_viewMatrix * m_modelMatrix2;
+			const glm::mat4 mvpMatrix2 = m_projectionMatrix * m_viewMatrixForward * m_modelMatrix2;
 			const glm::mat3 normalModelMatrix2 = glm::inverseTranspose(glm::mat3(m_modelMatrix2));
 
 			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix2));
@@ -231,7 +235,7 @@ class Application {
 			endMouseY = cursorPos.y;
 
 			m_modelMatrix = glm::rotate(m_modelMatrix, glm::radians(-(startMouseX - endMouseX) / 5.0f), glm::vec3(0, 1, 0));
-			//m_viewMatrix = glm::rotate(m_viewMatrix, glm::radians(-(startMouseX - endMouseX) / 5.0f), glm::vec3(0, 1, 0));
+			//m_viewMatrixForward = glm::rotate(m_viewMatrixForward, glm::radians(-(startMouseX - endMouseX) / 5.0f), glm::vec3(0, 1, 0));
 			//m_modelMatrix = glm::rotate(m_modelMatrix, glm::radians(-(startMouseY - endMouseY) / 5.0f), glm::vec3(0, 0, 1));
 		}
 		else {
@@ -281,9 +285,10 @@ class Application {
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
 		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 30.0f);
-	glm::mat4 m_viewMatrix =
-		glm::lookAt(glm::vec3(0, 0, -2), glm::vec3(0), glm::vec3(0, 1, 0));
-	glm::mat4 m_modelMatrix{ 1.0f };
+	glm::mat4 m_viewMatrixForward = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
+	glm::mat4 m_viewMatrix2 = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
+
+	glm::mat4 m_modelMatrix = glm::mat4{ 1.0 };
 	glm::mat4 m_modelMatrix2{1.0f};
 
 
