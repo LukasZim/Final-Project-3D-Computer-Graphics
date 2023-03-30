@@ -132,12 +132,16 @@ class Application {
 
 			// movement logic main character/mesh_1
 			m_defaultShader.bind();
+
+			// forward/backward
 			if (goingForwards) { 
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, -1));
 			}
 			else if (goingBackwards) {
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, 1));
 			}
+
+			// left/right
 			if (goingLeft) {
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(-.7, 0.0, 0));
 			}
@@ -145,6 +149,8 @@ class Application {
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(.7, 0.0, 0));
 
 			}
+
+			// toggle camera
 			if (!topviewEnabled) {
 				m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 3, 6, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 			}
