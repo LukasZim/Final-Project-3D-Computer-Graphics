@@ -91,9 +91,9 @@ class Application {
 		try {
 			ShaderBuilder defaultBuilder;
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
-									"shaders/new_shader_vert.glsl");
+									"shaders/phong_shader_vert.glsl");
 			defaultBuilder.addStage(GL_FRAGMENT_SHADER,
-									"shaders/toon_shader_frag.glsl");
+									"shaders/phong_shader_frag.glsl");
 			m_defaultShader = defaultBuilder.build();
 
 			ShaderBuilder shadowBuilder;
@@ -101,6 +101,12 @@ class Application {
 								   "shaders/shadow_vert.glsl");
 			m_shadowShader = shadowBuilder.build();
 
+
+			ShaderBuilder toonBuilder;
+			toonBuilder.addStage(GL_VERTEX_SHADER,
+												 "shaders/phong_shader_vert.glsl");
+			toonBuilder.addStage(GL_FRAGMENT_SHADER, "shaders/toon_shader_frag.glsl");
+			m_toonShader = toonBuilder.build();
 			// Any new shaders can be added below in similar fashion.
 			// ==> Don't forget to reconfigure CMake when you do!
 			//     Visual Studio: PROJECT => Generate Cache for ComputerGraphics
@@ -148,7 +154,7 @@ class Application {
 			glUniform3fv(9, 1, glm::value_ptr(m_materialDiffuse));
 			glUniform3fv(10, 1, glm::value_ptr(m_materialSpecular));
 			glUniform1f(11, materialShininess);
-			glUniform4fv(12, 1, glm::value_ptr(texColor));
+			//glUniform4fv(12, 1, glm::value_ptr(texColor));
 
 
 			// movement logic main character/mesh_1
@@ -409,6 +415,7 @@ class Application {
 	// Shader for default rendering and for depth rendering
 	Shader m_defaultShader;
 	Shader m_shadowShader;
+	Shader m_toonShader;
 
 	GPUMesh m_mesh;
 	GPUMesh m_mesh1;
