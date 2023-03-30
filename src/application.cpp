@@ -136,11 +136,15 @@ class Application {
 			else if (goingBackwards) {
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, 0.1));
 			}
-			m_viewMatrixForward = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 3, 6, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
-			m_viewMatrix2 = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 6, 0, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
+			if (!topviewEnabled) {
+				m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 3, 6, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
+			}
+			else {
+				m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 60, 6, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
+			}
 
 			// ****** start mesh_1 logic ****** 
-			const glm::mat4 mvpMatrix = m_projectionMatrix * m_viewMatrixForward * m_modelMatrix;
+			const glm::mat4 mvpMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 
 			// https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html
 			const glm::mat3 normalModelMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
@@ -155,7 +159,7 @@ class Application {
 			}
 
 			// Set view position
-			glm::vec3 viewPosition = glm::vec3(m_viewMatrixForward[3]);
+			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
 			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
 			
 			// give matrices to the shader
@@ -169,7 +173,7 @@ class Application {
 			// ****** start mesh_2 logic ****** 
 			m_modelMatrix2 = glm::rotate(m_modelMatrix2, glm::radians((float)dummyInteger), glm::vec3(0, 1, 0));
 
-			const glm::mat4 mvpMatrix2 = m_projectionMatrix * m_viewMatrixForward * m_modelMatrix2;
+			const glm::mat4 mvpMatrix2 = m_projectionMatrix * m_viewMatrix * m_modelMatrix2;
 			const glm::mat3 normalModelMatrix2 = glm::inverseTranspose(glm::mat3(m_modelMatrix2));
 
 			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix2));
@@ -284,9 +288,8 @@ class Application {
 
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
-		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 30.0f);
-	glm::mat4 m_viewMatrixForward = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
-	glm::mat4 m_viewMatrix2 = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
+		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 100.0f);
+	glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	glm::mat4 m_modelMatrix = glm::mat4{ 1.0 };
 	glm::mat4 m_modelMatrix2{1.0f};
