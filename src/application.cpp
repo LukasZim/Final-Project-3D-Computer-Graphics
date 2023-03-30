@@ -44,9 +44,9 @@ class Application {
 		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
 		m_mesh2("resources/cube-textured.obj"),
 		m_mesh("resources/Gunship_Model/gunship1.obj"),
-		m_mesh_ground("resources/test/test.obj"),
+		m_mesh_ground("resources/moonsurface/moonsurface.obj"),
 		m_texture("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png") ,
-		m_texture_ground_1("resources/test/coral_fort_wall_01_diff_1k.jpg") ,
+		m_texture_ground_1("resources/moonsurface/moon.jpg") ,
 		m_texture_ground_2("resources/test/forest_ground_04_diff_1k.jpg") {
 		m_window.registerKeyCallback(
 			[this](int key, int scancode, int action, int mods) {
@@ -131,10 +131,10 @@ class Application {
 			// movement logic main character/mesh_1
 			m_defaultShader.bind();
 			if (goingForwards) {
-				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, -0.1));
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, -1));
 			}
 			else if (goingBackwards) {
-				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, 0.1));
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, 1));
 			}
 			if (!topviewEnabled) {
 				m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 3, 6, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
@@ -179,7 +179,7 @@ class Application {
 			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix2));
 			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix2));
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix2));
-			if (m_mesh2.hasTextureCoords()) {
+			if (m_mesh_ground.hasTextureCoords()) {
 				m_texture_ground_1.bind(GL_TEXTURE1);
 				//m_mesh2.kdTexture.value().bind(GL_TEXTURE1);
 				glUniform1i(3, 1);
@@ -189,7 +189,7 @@ class Application {
 				glUniform1i(4, GL_FALSE);
 			}
 
-			m_mesh2.draw();
+			m_mesh_ground.draw();
 			// ****** end mesh_2 logic ****** 
 
 			//m_mesh_ground.draw();
@@ -288,11 +288,11 @@ class Application {
 
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
-		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 100.0f);
+		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 1000.0f);
 	glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	glm::mat4 m_modelMatrix = glm::mat4{ 1.0 };
-	glm::mat4 m_modelMatrix2{1.0f};
+	glm::mat4 m_modelMatrix2 = glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 0, 0));
 
 
 	// Light properties
