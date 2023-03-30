@@ -63,12 +63,18 @@ class Application {
 				else if (action == GLFW_RELEASE)
 					onMouseReleased(button, mods);
 			});
+<<<<<<< Updated upstream
 
 		fbo.createDepthTexture();
 
 
 		try {
 			//Phong Shader
+=======
+		
+		try {
+			initShadowMap();
+>>>>>>> Stashed changes
 			ShaderBuilder defaultBuilder;
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
 									"shaders/new_shader_vert.glsl");
@@ -83,12 +89,18 @@ class Application {
 			shadowBuilder.addStage(GL_FRAGMENT_SHADER, "shaders/shadow_frag.glsl");
 			m_shadowShader = shadowBuilder.build();
 
+<<<<<<< Updated upstream
 			//Toon Shader 
 			ShaderBuilder toonBuilder;
 			toonBuilder.addStage(GL_FRAGMENT_SHADER,
 				"shaders/toon_shader_frag.glsl");
 			toonBuilder.addStage(GL_VERTEX_SHADER, 
 				"shaders/new_shader_vert.glsl");
+=======
+			ShaderBuilder toonBuilder;
+			toonBuilder.addStage(GL_VERTEX_SHADER, "shaders/new_shader_vert.glsl");
+			toonBuilder.addStage(GL_FRAGMENT_SHADER, "shaders/toon_shader_frag.glsl");
+>>>>>>> Stashed changes
 			m_toonShader = toonBuilder.build();
 
 			// Any new shaders can be added below in similar fashion.
@@ -153,8 +165,13 @@ class Application {
 			}
 
 			m_defaultShader.bind();
+<<<<<<< Updated upstream
 			//m_shadowShader.bind();
 			//m_toonShader.bind();
+=======
+			m_shadowShader.bind();
+			m_toonShader.bind();
+>>>>>>> Stashed changes
 			//Newly Added 3.27.2023
 			// Set light properties
 			glUniform3fv(5, 1, glm::value_ptr(m_lightPosition));
@@ -166,7 +183,9 @@ class Application {
 			glUniform3fv(10, 1, glm::value_ptr(m_materialSpecular));
 			glUniform1f(11, materialShininess);
 			glUniform4fv(12, 1, glm::value_ptr(texColor));
-			
+
+			//lightmvp for shadow map
+			glUniformMatrix4fv(3, 1, GL_FALSE, &lightmvp[0][0]);
 			// Set view position
 			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
 			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
@@ -198,6 +217,7 @@ class Application {
 				glUniform1i(4, GL_FALSE);
 			}
 
+<<<<<<< Updated upstream
 			glUniformMatrix4fv(15, 1, GL_FALSE, &depthMVP[0][0]);
 
 			
@@ -206,6 +226,9 @@ class Application {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			fbo.unbind();
 			
+=======
+
+>>>>>>> Stashed changes
 			m_mesh2.draw();
 
 			m_mesh_ground.draw();
@@ -285,6 +308,28 @@ class Application {
 			mouse0Held = false;
 		}
 	}
+	void initShadowMap() {
+		// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+
+		glGenFramebuffers(1, &Framebuffername);
+		glBindFramebuffer(GL_FRAMEBUFFER, Framebuffername);
+
+		// Depth texture. Slower than a depth buffer, but you can sample it later in your shader
+
+		glGenTextures(1, &depthTexture);
+		glBindTexture(GL_TEXTURE_2D, depthTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, SHADOW_HEIGHT, SHADOW_WIDTH, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthTexture, 0);
+
+		glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+
+		// Always check that our framebuffer is ok
+	}
 
 
   private:
@@ -326,6 +371,7 @@ class Application {
 	glm::vec4 texColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	float ambientIntensity = 0.1f;
 
+<<<<<<< Updated upstream
 
 	//Shadow Mapping
 	Framebuffer fbo = Framebuffer();
@@ -339,6 +385,19 @@ class Application {
 	glm::mat4 depthModelMatrix = glm::mat4(1.0);
 	glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
 
+=======
+	//Shadow Mapping
+	const GLuint SHADOW_WIDTH = 1024;
+	const GLuint SHADOW_HEIGHT = 1024;
+	GLuint Framebuffername = 0;
+	GLuint depthTexture = 0;
+
+	glm::vec3 lightInvisible = glm::vec3(0.5, 3, 3);
+	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f);
+	glm::mat4 lightView = glm::lookAt(lightInvisible, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	glm::mat4 modelMatrix = glm::mat4(1.0);
+	glm::mat4 lightmvp = lightProjection * lightView * modelMatrix;
+>>>>>>> Stashed changes
 
 };
 
