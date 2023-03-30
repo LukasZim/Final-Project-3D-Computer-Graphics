@@ -1,7 +1,6 @@
 // #include "Image.h"
 #include "mesh.h"
 #include "texture.h"
-#include "framebuffer.cpp"
 // Always include window first (because it includes glfw, which includes GL
 // which needs to be included AFTER glew). Can't wait for modules to fix this
 // stuff...
@@ -65,13 +64,10 @@ class Application {
 			});
 
 
-		fbo.createDepthTexture();
-
-
 
 		
 		try {
-			initShadowMap();
+			//initShadowMap();
 
 			ShaderBuilder defaultBuilder;
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
@@ -84,16 +80,10 @@ class Application {
 			ShaderBuilder shadowBuilder;
 			shadowBuilder.addStage(GL_VERTEX_SHADER,
 								   "shaders/shadow_vert.glsl");
-			shadowBuilder.addStage(GL_FRAGMENT_SHADER, "shaders/shadow_frag.glsl");
 			m_shadowShader = shadowBuilder.build();
 
 
-			//Toon Shader 
-			ShaderBuilder toonBuilder;
-			toonBuilder.addStage(GL_FRAGMENT_SHADER,
-				"shaders/toon_shader_frag.glsl");
-			toonBuilder.addStage(GL_VERTEX_SHADER, 
-				"shaders/new_shader_vert.glsl");
+
 
 			ShaderBuilder toonBuilder;
 			toonBuilder.addStage(GL_VERTEX_SHADER, "shaders/new_shader_vert.glsl");
@@ -181,9 +171,10 @@ class Application {
 			glUniform3fv(10, 1, glm::value_ptr(m_materialSpecular));
 			glUniform1f(11, materialShininess);
 			glUniform4fv(12, 1, glm::value_ptr(texColor));
+			
 
-			//lightmvp for shadow map
-			glUniformMatrix4fv(3, 1, GL_FALSE, &lightmvp[0][0]);
+
+			
 			// Set view position
 			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
 			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
@@ -215,14 +206,12 @@ class Application {
 				glUniform1i(4, GL_FALSE);
 			}
 
-
-			glUniformMatrix4fv(15, 1, GL_FALSE, &depthMVP[0][0]);
-
-			
+			//shadow mapping
+			/*glUniformMatrix4fv(15, 1, GL_FALSE, &lightmvp[0][0]);
+			glBindFramebuffer(GL_FRAMEBUFFER, Framebuffername);
 			glViewport(0, 0, 1024, 1024);
-			glBindFramebuffer(GL_FRAMEBUFFER, fb);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			fbo.unbind();
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
 			
 
 
@@ -370,20 +359,6 @@ class Application {
 	float ambientIntensity = 0.1f;
 
 
-
-	//Shadow Mapping
-	Framebuffer fbo = Framebuffer();
-	GLuint fb = fbo.getFramebufferID();
-	GLuint dpm = fbo.getDepthMapTextureID();
-
-	glm::vec3 lightInvDir = glm::vec3(0.5f, 2, 2);
-	// Compute the MVP matrix from the light's point of view
-	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 20);
-	glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	glm::mat4 depthModelMatrix = glm::mat4(1.0);
-	glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
-
-
 	//Shadow Mapping
 	const GLuint SHADOW_WIDTH = 1024;
 	const GLuint SHADOW_HEIGHT = 1024;
@@ -392,7 +367,7 @@ class Application {
 
 	glm::vec3 lightInvisible = glm::vec3(0.5, 3, 3);
 	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 20.0f);
-	glm::mat4 lightView = glm::lookAt(lightInvisible, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+	glm::mat4 lightView = glm::lookAt(m_lightPosition, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
 	glm::mat4 modelMatrix = glm::mat4(1.0);
 	glm::mat4 lightmvp = lightProjection * lightView * modelMatrix;
 

@@ -23,29 +23,28 @@ layout(location = 0) out vec4 fragColor;
 void main()
 {
     vec3 ambient, diffuse, specular;
-    const vec3 N = normalize(fragNormal);
-    vec3 L = normalize(lightPosition - fragPosition);
+    const vec3 Normalized = normalize(fragNormal);
+    vec3 new_pos = normalize(lightPosition - fragPosition);
     
     // Ambient component
     ambient = materialAmbient * lightColor;
     
     // Diffuse component
-    float lambertian = max(dot(N, L), 0.0);
-    diffuse = materialDiffuse * lambertian * lightColor;
+    float intensity = max(dot(Normalized, new_pos), 0.0);
+    diffuse = materialDiffuse * intensity * lightColor;
     
     // Specular component
-    vec3 R = reflect(-L, N);
-    vec3 V = normalize(viewPosition - fragPosition);
-    float specularFactor = pow(max(dot(R, V), 1.0), m_materialShininess);
-    specular = materialSpecular * specularFactor * lightColor;
+    vec3 reflection = reflect(-new_pos, Normalized);
+    vec3 new_pos_specular = normalize(viewPosition - fragPosition);
+    float specular_intensity = pow(max(dot(reflection, new_pos_specular), 1.0), m_materialShininess);
+    specular = materialSpecular * specular_intensity * lightColor;
     
     vec3 finalColor = ambient + diffuse + specular;
     vec4 texColor = vec4(1.0);
 if (hasTexCoords) {
     texColor = texture(colorMap, fragTexCoord);
 } else {
-    texColor = vec4(1.0, 1.0, 1.0, 1.0);
+    texColor = vec4(1.0);
 }
-fragColor = vec4(finalColor * texColor.rgb, 1);
-
+fragColor = vec4(finalColor * texColor.rgb, 1.0);
 }
