@@ -157,7 +157,7 @@ class Application {
 			//m_shadowShader.bind();
 			//m_toonShader.bind();
 
-			m_shadowShader.bind();
+			//m_shadowShader.bind();
 			m_toonShader.bind();
 
 			//Newly Added 3.27.2023
@@ -360,8 +360,8 @@ class Application {
 
 
 	//Shadow Mapping
-	const GLuint SHADOW_WIDTH = 1024;
-	const GLuint SHADOW_HEIGHT = 1024;
+	GLuint SHADOW_WIDTH = 1024;
+	GLuint SHADOW_HEIGHT = 1024;
 	GLuint Framebuffername = 0;
 	GLuint depthTexture = 0;
 
