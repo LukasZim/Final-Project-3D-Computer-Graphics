@@ -93,50 +93,23 @@ class Application {
 			// Put your real-time logic and rendering in here
 			m_window.updateInput();
 
-			if (goingForwards) {
-				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.01, 0.0, 0.0));
-			}
-			else if (goingBackwards) {
-				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(-0.01, 0.0, 0.0));
-			}
-			m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(-2, 1, 0, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
-
 			// Use ImGui for easy input/output of ints, floats, strings, etc...
 			ImGui::Begin("Window");
 			ImGui::InputInt(
 				"This is an integer input",
 				&dummyInteger);	 // Use ImGui::DragInt or ImGui::DragFloat for
-								 // larger range of numbers.
+			// larger range of numbers.
 			ImGui::Text("Value is: %i",
-						dummyInteger);	// Use C printf formatting rules (%i is
-										// a signed integer)
+				dummyInteger);	// Use C printf formatting rules (%i is
+			// a signed integer)
 			ImGui::End();
+
 
 			// Clear the screen
 			glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			
 			glEnable(GL_DEPTH_TEST);
-
-			const glm::mat4 mvpMatrix =
-				m_projectionMatrix * m_viewMatrix * m_modelMatrix;
-			// Normals should be transformed differently than positions
-			// (ignoring translations + dealing with scaling):
-			// https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html
-			const glm::mat3 normalModelMatrix =
-				glm::inverseTranspose(glm::mat3(m_modelMatrix));
-
-			if (m_mesh.hasTextureCoords()) {
-				m_texture.bind(GL_TEXTURE0);
-				//m_mesh.kdTexture.value().bind(GL_TEXTURE0);
-				glUniform1i(3, 0);
-				glUniform1i(4, GL_TRUE);
-			} else {
-				glUniform1i(4, GL_FALSE);
-			}
-
-			m_defaultShader.bind();
 
 			//Newly Added 3.27.2023
 			// Set light properties
@@ -149,7 +122,34 @@ class Application {
 			glUniform3fv(10, 1, glm::value_ptr(m_materialSpecular));
 			glUniform1f(11, materialShininess);
 			glUniform4fv(12, 1, glm::value_ptr(texColor));
-			
+
+
+			// movement logic main character/mesh_1
+			m_defaultShader.bind();
+			if (goingForwards) {
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.01, 0.0, 0.0));
+			}
+			else if (goingBackwards) {
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(-0.01, 0.0, 0.0));
+			}
+			m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(-2, 1, 0, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
+
+
+			// ****** start mesh_1 logic ****** 
+			const glm::mat4 mvpMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
+
+			// https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html
+			const glm::mat3 normalModelMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
+
+			if (m_mesh.hasTextureCoords()) {
+				m_texture.bind(GL_TEXTURE0);
+				//m_mesh.kdTexture.value().bind(GL_TEXTURE0);
+				glUniform1i(3, 0);
+				glUniform1i(4, GL_TRUE);
+			} else {
+				glUniform1i(4, GL_FALSE);
+			}
+
 			// Set view position
 			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
 			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
@@ -160,14 +160,14 @@ class Application {
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 
 			m_mesh.draw();
+			// ****** end mesh_1 logic ****** 
 
-			//glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(glm::vec4{1.0}));
+			// ****** start mesh_2 logic ****** 
 			m_modelMatrix2 = glm::rotate(m_modelMatrix2, glm::radians((float)dummyInteger), glm::vec3(0, 1, 0));
 
-			const glm::mat4 mvpMatrix2 =
-				m_projectionMatrix * m_viewMatrix * m_modelMatrix2;
-			const glm::mat3 normalModelMatrix2 =
-				glm::inverseTranspose(glm::mat3(m_modelMatrix2));
+			const glm::mat4 mvpMatrix2 = m_projectionMatrix * m_viewMatrix * m_modelMatrix2;
+			const glm::mat3 normalModelMatrix2 = glm::inverseTranspose(glm::mat3(m_modelMatrix2));
+
 			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix2));
 			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix2));
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix2));
@@ -182,8 +182,9 @@ class Application {
 			}
 
 			m_mesh2.draw();
+			// ****** end mesh_2 logic ****** 
 
-			m_mesh_ground.draw();
+			//m_mesh_ground.draw();
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
