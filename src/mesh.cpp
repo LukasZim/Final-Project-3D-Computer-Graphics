@@ -9,6 +9,7 @@ DISABLE_WARNINGS_POP()
 
 GPUMesh::GPUMesh(std::filesystem::path filePath)
 {
+	std::cout << filePath.string().c_str() << "\n";
 	if (!std::filesystem::exists(filePath))
 		throw MeshLoadingException(fmt::format("File {} does not exist", filePath.string().c_str()));
 

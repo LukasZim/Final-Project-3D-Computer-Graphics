@@ -37,6 +37,7 @@ class Application {
 
 	  int endMouseX = 0;
 	  int endMouseY = 0;
+	  int framecounter = 0;
 
 
 
@@ -44,8 +45,28 @@ class Application {
 	Application()
 		: 
 		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
-		m_mesh2("resources/cube-textured.obj"),
 		m_mesh("resources/Gunship_Model/gunship1.obj"),
+		m_mesh1("resources/Gunship_Model/gunship1.obj"),
+		m_mesh2("resources/Gunship_Model/gunship2.obj"),
+		m_mesh3("resources/Gunship_Model/gunship3.obj"),
+		m_mesh4("resources/Gunship_Model/gunship4.obj"),
+		m_mesh5("resources/Gunship_Model/gunship5.obj"),
+		m_mesh6("resources/Gunship_Model/gunship6.obj"),
+		m_mesh7("resources/Gunship_Model/gunship7.obj"),
+		m_mesh8("resources/Gunship_Model/gunship8.obj"),
+		m_mesh9("resources/Gunship_Model/gunship9.obj"),
+		m_mesh10("resources/Gunship_Model/gunship10.obj"),
+		m_mesh11("resources/Gunship_Model/gunship11.obj"),
+		m_mesh12("resources/Gunship_Model/gunship12.obj"),
+		m_mesh13("resources/Gunship_Model/gunship13.obj"),
+		m_mesh14("resources/Gunship_Model/gunship14.obj"),
+		m_mesh15("resources/Gunship_Model/gunship15.obj"),
+		m_mesh16("resources/Gunship_Model/gunship16.obj"),
+		m_mesh17("resources/Gunship_Model/gunship17.obj"),
+		m_mesh18("resources/Gunship_Model/gunship18.obj"),
+		m_mesh19("resources/Gunship_Model/gunship19.obj"),
+		m_mesh20("resources/Gunship_Model/gunship20.obj"),
+		m_mesh_powerup("resources/cube-textured.obj"),
 		m_mesh_ground("resources/moonsurface/moonsurface.obj"),
 		m_texture("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png") ,
 		m_texture_ground_1("resources/moonsurface/moon.jpg") ,
@@ -158,7 +179,7 @@ class Application {
 				m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 60, 6, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 			}
 
-			// ****** start mesh_1 logic ****** 
+			// ****** start playermesh logic ****** 
 			const glm::mat4 mvpMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 
 			// https://paroj.github.io/gltut/Illumination/Tut09%20Normal%20Transformation.html
@@ -182,7 +203,90 @@ class Application {
 			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 
-			m_mesh.draw();
+			// awful animation implementation :(
+			switch ((framecounter % 80)/2) {
+				case 0:
+				case 1:
+					m_mesh1.draw();
+					break;
+				case 2:
+				case 3:
+					m_mesh2.draw();
+					break;
+				case 4:
+				case 5:
+					m_mesh3.draw();
+					break;
+				case 6:
+				case 7:
+					m_mesh4.draw();
+					break;
+				case 8:
+				case 9:
+					m_mesh5.draw();
+					break;
+				case 10:
+				case 11:
+					m_mesh6.draw();
+					break;
+				case 12:
+				case 13:
+					m_mesh7.draw();
+					break;
+				case 14:
+				case 15:
+					m_mesh8.draw();
+					break;
+				case 16:
+				case 17:
+					m_mesh9.draw();
+					break;
+				case 18:
+				case 19:
+					m_mesh10.draw();
+					break;
+				case 20:
+				case 21:
+					m_mesh11.draw();
+					break;
+				case 22:
+				case 23:
+					m_mesh12.draw();
+					break;
+				case 24:
+				case 25:
+					m_mesh13.draw();
+					break;
+				case 26:
+				case 27:
+					m_mesh14.draw();
+					break;
+				case 28:
+				case 29:
+					m_mesh15.draw();
+					break;
+				case 30:
+				case 31:
+					m_mesh16.draw();
+					break;
+				case 32:
+				case 33:
+					m_mesh17.draw();
+					break;
+				case 34:
+				case 35:
+					m_mesh18.draw();
+					break;
+				case 36:
+				case 37:
+					m_mesh19.draw();
+					break;
+				case 38:
+				case 39:
+					m_mesh20.draw();
+					break;
+
+			}
 			// ****** end mesh_1 logic ****** 
 
 			// ****** start mesh_2 logic ****** 
@@ -211,6 +315,7 @@ class Application {
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
+			framecounter++;
 		}
 	}
 
@@ -306,8 +411,29 @@ class Application {
 	Shader m_shadowShader;
 
 	GPUMesh m_mesh;
+	GPUMesh m_mesh1;
 	GPUMesh m_mesh2;
+	GPUMesh m_mesh3;
+	GPUMesh m_mesh4;
+	GPUMesh m_mesh5;
+	GPUMesh m_mesh6;
+	GPUMesh m_mesh7;
+	GPUMesh m_mesh8;
+	GPUMesh m_mesh9;
+	GPUMesh m_mesh10;
+	GPUMesh m_mesh11;
+	GPUMesh m_mesh12;
+	GPUMesh m_mesh13;
+	GPUMesh m_mesh14;
+	GPUMesh m_mesh15;
+	GPUMesh m_mesh16;
+	GPUMesh m_mesh17;
+	GPUMesh m_mesh18;
+	GPUMesh m_mesh19;
+	GPUMesh m_mesh20;
 	GPUMesh m_mesh_ground;
+
+	GPUMesh m_mesh_powerup;
 
 	Texture m_texture;
 	Texture m_texture_ground_1;
