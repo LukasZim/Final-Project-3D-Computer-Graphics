@@ -319,7 +319,7 @@ class Application {
 			// ****** end mesh_2 logic ****** 
 
 			// ****** start mesh_powerup logic ****** 
-			m_modelMatrixPowerup = glm::translate(glm::rotate(m_modelMatrixPowerup, glm::radians((float) 3.0f), glm::vec3(0, 1, 0)) , glm::vec3(0, 0, 0));
+			m_modelMatrixPowerup = glm::translate(glm::rotate(m_modelMatrixPowerup, glm::radians((float) 3.0f), glm::vec3(0, 1, 0)) , glm::vec3(0, 0.01 * sin(framecounter / 720), 0));
 
 			const glm::mat4 mvpMatrixPowerup = m_projectionMatrix * m_viewMatrix * m_modelMatrixPowerup;
 			const glm::mat3 normalModelMatrixPowerup = glm::inverseTranspose(glm::mat3(m_modelMatrixPowerup));
