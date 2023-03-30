@@ -30,6 +30,8 @@ class Application {
 
 	  bool mouse0Held = false;
 	  bool goingForwards = false;
+	  bool goingRight = false;
+	  bool goingLeft = false;
 	  bool goingBackwards = false;
 	  bool topviewEnabled = false;
 
@@ -70,7 +72,7 @@ class Application {
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
 									"shaders/new_shader_vert.glsl");
 			defaultBuilder.addStage(GL_FRAGMENT_SHADER,
-									"shaders/new_shader_frag.glsl");
+									"shaders/toon_shader_frag.glsl");
 			m_defaultShader = defaultBuilder.build();
 
 			ShaderBuilder shadowBuilder;
@@ -130,11 +132,18 @@ class Application {
 
 			// movement logic main character/mesh_1
 			m_defaultShader.bind();
-			if (goingForwards) {
+			if (goingForwards) { 
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, -1));
 			}
 			else if (goingBackwards) {
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, 1));
+			}
+			if (goingLeft) {
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(-.7, 0.0, 0));
+			}
+			else if (goingRight) {
+				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(.7, 0.0, 0));
+
 			}
 			if (!topviewEnabled) {
 				m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(0, 3, 6, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
@@ -211,6 +220,12 @@ class Application {
 		if (key == 83) {
 			goingBackwards = true;
 		}
+		if (key == 65) {
+			goingLeft = true;
+		}
+		if (key == 68) {
+			goingRight = true;
+		}
 	}
 
 	// In here you can handle key releases
@@ -224,6 +239,12 @@ class Application {
 		}
 		if (key == 83) {
 			goingBackwards = false;
+		}
+		if (key == 65) {
+			goingLeft = false;
+		}
+		if (key == 68) {
+			goingRight = false;
 		}
 	}
 
@@ -288,7 +309,7 @@ class Application {
 
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
-		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 1000.0f);
+		glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 1000.0f);
 	glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	glm::mat4 m_modelMatrix = glm::mat4{ 1.0 };
