@@ -63,18 +63,16 @@ class Application {
 				else if (action == GLFW_RELEASE)
 					onMouseReleased(button, mods);
 			});
-<<<<<<< Updated upstream
+
 
 		fbo.createDepthTexture();
 
 
-		try {
-			//Phong Shader
-=======
+
 		
 		try {
 			initShadowMap();
->>>>>>> Stashed changes
+
 			ShaderBuilder defaultBuilder;
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
 									"shaders/new_shader_vert.glsl");
@@ -89,18 +87,18 @@ class Application {
 			shadowBuilder.addStage(GL_FRAGMENT_SHADER, "shaders/shadow_frag.glsl");
 			m_shadowShader = shadowBuilder.build();
 
-<<<<<<< Updated upstream
+
 			//Toon Shader 
 			ShaderBuilder toonBuilder;
 			toonBuilder.addStage(GL_FRAGMENT_SHADER,
 				"shaders/toon_shader_frag.glsl");
 			toonBuilder.addStage(GL_VERTEX_SHADER, 
 				"shaders/new_shader_vert.glsl");
-=======
+
 			ShaderBuilder toonBuilder;
 			toonBuilder.addStage(GL_VERTEX_SHADER, "shaders/new_shader_vert.glsl");
 			toonBuilder.addStage(GL_FRAGMENT_SHADER, "shaders/toon_shader_frag.glsl");
->>>>>>> Stashed changes
+
 			m_toonShader = toonBuilder.build();
 
 			// Any new shaders can be added below in similar fashion.
@@ -165,13 +163,13 @@ class Application {
 			}
 
 			m_defaultShader.bind();
-<<<<<<< Updated upstream
+
 			//m_shadowShader.bind();
 			//m_toonShader.bind();
-=======
+
 			m_shadowShader.bind();
 			m_toonShader.bind();
->>>>>>> Stashed changes
+
 			//Newly Added 3.27.2023
 			// Set light properties
 			glUniform3fv(5, 1, glm::value_ptr(m_lightPosition));
@@ -217,7 +215,7 @@ class Application {
 				glUniform1i(4, GL_FALSE);
 			}
 
-<<<<<<< Updated upstream
+
 			glUniformMatrix4fv(15, 1, GL_FALSE, &depthMVP[0][0]);
 
 			
@@ -226,9 +224,9 @@ class Application {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			fbo.unbind();
 			
-=======
 
->>>>>>> Stashed changes
+
+
 			m_mesh2.draw();
 
 			m_mesh_ground.draw();
@@ -371,7 +369,7 @@ class Application {
 	glm::vec4 texColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	float ambientIntensity = 0.1f;
 
-<<<<<<< Updated upstream
+
 
 	//Shadow Mapping
 	Framebuffer fbo = Framebuffer();
@@ -385,7 +383,7 @@ class Application {
 	glm::mat4 depthModelMatrix = glm::mat4(1.0);
 	glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
 
-=======
+
 	//Shadow Mapping
 	const GLuint SHADOW_WIDTH = 1024;
 	const GLuint SHADOW_HEIGHT = 1024;
@@ -397,7 +395,7 @@ class Application {
 	glm::mat4 lightView = glm::lookAt(lightInvisible, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
 	glm::mat4 modelMatrix = glm::mat4(1.0);
 	glm::mat4 lightmvp = lightProjection * lightView * modelMatrix;
->>>>>>> Stashed changes
+
 
 };
 
