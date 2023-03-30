@@ -92,14 +92,12 @@ class Application {
 			// This is your game loop
 			// Put your real-time logic and rendering in here
 			m_window.updateInput();
-			//glm::lookAt()
+
 			if (goingForwards) {
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.01, 0.0, 0.0));
-				//m_viewMatrix = glm::translate(m_viewMatrix, glm::vec3(0.01, 0.0, 0.0));
 			}
 			else if (goingBackwards) {
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(-0.01, 0.0, 0.0));
-
 			}
 			m_viewMatrix = glm::lookAt(glm::vec3(m_modelMatrix * glm::vec4(-2, 1, 0, 1)), glm::vec3(m_modelMatrix * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 
@@ -113,13 +111,11 @@ class Application {
 						dummyInteger);	// Use C printf formatting rules (%i is
 										// a signed integer)
 			ImGui::End();
-			m_modelMatrix2 = glm::rotate(m_modelMatrix2, glm::radians((float)dummyInteger), glm::vec3(0, 1, 0));
 
 			// Clear the screen
 			glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			// ...
 			
 			glEnable(GL_DEPTH_TEST);
 
@@ -131,27 +127,15 @@ class Application {
 			const glm::mat3 normalModelMatrix =
 				glm::inverseTranspose(glm::mat3(m_modelMatrix));
 
-			m_defaultShader.bind();
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
-			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
-			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 			if (m_mesh.hasTextureCoords()) {
 				m_texture.bind(GL_TEXTURE0);
-				m_mesh.kdTexture.value().bind(GL_TEXTURE0);
+				//m_mesh.kdTexture.value().bind(GL_TEXTURE0);
 				glUniform1i(3, 0);
 				glUniform1i(4, GL_TRUE);
 			} else {
 				glUniform1i(4, GL_FALSE);
 			}
-			if (m_mesh2.hasTextureCoords()) {
-				m_texture_ground_1.bind(GL_TEXTURE1);
-				//m_mesh2.kdTexture.value().bind(GL_TEXTURE1);
-				glUniform1i(3, 1);
-				glUniform1i(4, GL_TRUE);
-			}
-			else {
-				glUniform1i(4, GL_FALSE);
-			}
+
 			m_defaultShader.bind();
 
 			//Newly Added 3.27.2023
@@ -170,10 +154,16 @@ class Application {
 			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
 			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
 			
-
+			// give matrices to the shader
+			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
+			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
+			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 
 			m_mesh.draw();
+
 			//glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(glm::vec4{1.0}));
+			m_modelMatrix2 = glm::rotate(m_modelMatrix2, glm::radians((float)dummyInteger), glm::vec3(0, 1, 0));
+
 			const glm::mat4 mvpMatrix2 =
 				m_projectionMatrix * m_viewMatrix * m_modelMatrix2;
 			const glm::mat3 normalModelMatrix2 =
@@ -181,6 +171,15 @@ class Application {
 			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix2));
 			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix2));
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix2));
+			if (m_mesh2.hasTextureCoords()) {
+				m_texture_ground_1.bind(GL_TEXTURE1);
+				//m_mesh2.kdTexture.value().bind(GL_TEXTURE1);
+				glUniform1i(3, 1);
+				glUniform1i(4, GL_TRUE);
+			}
+			else {
+				glUniform1i(4, GL_FALSE);
+			}
 
 			m_mesh2.draw();
 
