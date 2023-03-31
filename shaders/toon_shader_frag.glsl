@@ -29,13 +29,13 @@ void main()
     // Diffuse 
     float diffuse_reflection = dot(normalized_fragNormal, new_pos);
     float diffuse_intensity = 0.0;
-    if(diffuse_reflection>=0.9){
-        diffuse_intensity = 1;
+    if(diffuse_reflection>=0.5){
+        diffuse_intensity = 1.0;
     }
-    else if (diffuse_reflection>=0.6){
+    else if (diffuse_reflection>=0.4){
 		diffuse_intensity = 0.8;
 	}
-	else if (diffuse_reflection>=0.1){
+	else if (diffuse_reflection>=0.2){
 		diffuse_intensity = 0.5;
 	}
 	else{
