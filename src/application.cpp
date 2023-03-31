@@ -78,18 +78,10 @@ class Application {
 			float y_coor[4] = { 1.3, 2.3, 3.3, 4.3 };
 
 			for (int i = 0; i < 4; i++) {
-				x_coor[i] = factorial(4) /
-					(factorial(i) * factorial(4 - i)) *
-					std::pow(1 - t, 4 - i) *
-					std::pow(t, i) *
-					x_coor[i];
+				x_coor[i] = factorial(4) / (factorial(i) * factorial(4 - i)) * std::pow(1 - t, 4 - i) * std::pow(t, i) * x_coor[i];
 			}
 			for (int i = 0; i < 4; i++) {
-				y_coor[i] = factorial(4) /
-					(factorial(i) * factorial(4 - i)) *
-					std::pow(1 - t, 4 - i) *
-					std::pow(t, i) *
-					y_coor[i];
+				y_coor[i] = factorial(4) / (factorial(i) * factorial(4 - i)) * std::pow(1 - t, 4 - i) * std::pow(t, i) * y_coor[i];
 			}
 
 			float final_x_coor = x_coor[0] + x_coor[1] + x_coor[2] + x_coor[3];
