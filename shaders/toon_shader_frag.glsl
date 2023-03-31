@@ -29,17 +29,17 @@ void main()
     // Diffuse 
     float diffuse_reflection = dot(normalized_fragNormal, new_pos);
     float diffuse_intensity = 0.0;
-    if(diffuse_reflection>=0.9){
-        diffuse_intensity = 1;
+    if(diffuse_reflection>=0.5){
+        diffuse_intensity = 1.0;
     }
-    else if (diffuse_reflection>=0.6){
+    else if (diffuse_reflection>=0.4){
 		diffuse_intensity = 0.8;
 	}
-	else if (diffuse_reflection>=0.1){
+	else if (diffuse_reflection>=0.3){
 		diffuse_intensity = 0.5;
 	}
 	else{
-		diffuse_intensity = 0.0;
+		diffuse_intensity = 0.4;
 	}
     diffuse = materialDiffuse * diffuse_intensity * lightColor;
     
@@ -48,7 +48,7 @@ void main()
     vec3 specular_view = normalize(viewPosition - fragPosition);
     float specularFactor = pow(max(dot(specular_reflection, specular_view), 0.0), m_materialShininess);
     float specular_intensity = 0.0;
-    if(specularFactor>0.6){
+    if(specularFactor>0.5){
         specular_intensity = 1.0;
     }
     else if(specularFactor>0.2){
