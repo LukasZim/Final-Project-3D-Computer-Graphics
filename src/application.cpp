@@ -67,7 +67,7 @@ class Application {
 
 		
 		try {
-			//initShadowMap();
+			initShadowMap();
 
 			ShaderBuilder defaultBuilder;
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
@@ -154,7 +154,7 @@ class Application {
 
 			m_defaultShader.bind();
 
-			//m_shadowShader.bind();
+			m_shadowShader.bind();
 			//m_toonShader.bind();
 
 			//m_shadowShader.bind();
@@ -215,7 +215,7 @@ class Application {
 			
 
 
-
+			glUniform4fv(12, 1, glm::value_ptr(lightmvp));
 			m_mesh2.draw();
 
 			m_mesh_ground.draw();

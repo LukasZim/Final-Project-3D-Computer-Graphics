@@ -1,9 +1,9 @@
 #version 450
 layout(location = 0) in vec3 position;
 uniform mat4 depthProjectionMatrix;
-layout(location = 15) uniform mat4 depthMVP;
+layout(location = 12) uniform mat4 lightmvp;
 
 void main()
 {
-    gl_Position = depthMVP * vec4(position, 1.0)
+    gl_Position = lightmvp * vec4(position, 1.0)
 }
