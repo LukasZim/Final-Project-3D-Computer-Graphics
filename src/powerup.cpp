@@ -14,8 +14,13 @@ class Powerup {
 			m_mesh_powerup(meshpath),
 			m_texture_powerup(texturepath)
 		{
-
+			collected = false;
+			countDown = 0;
 			m_modelMatrixPowerup = startMatrix;
+		}
+
+		glm::vec3 getLocation() {
+			return m_modelMatrixPowerup * glm::vec4(0, 0, 0, 1);
 		}
 
 		void setModelMatrix(glm::mat4 modelmatrix){
@@ -25,6 +30,27 @@ class Powerup {
 		glm::mat4 getModelMatrix() {
 			return m_modelMatrixPowerup;
 		}
+
+		void collect() {
+			this->collected = true;
+			this->countDown = 200;
+		}
+
+		bool tryCollect(glm::vec3 location) {
+			if (!collected && glm::length(getLocation() - location) < 18) {
+				collect();
+				return true;
+			}
+			return false;
+		}
+		/*
+		bool tryCollect(Player &player) {
+			if (glm::distance(getLocation(), player.getLocation()) < 10) {
+				collect();
+				return true;
+			}
+			return false;
+		}*/
 
 		void draw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix) {
 			m_modelMatrixPowerup = glm::translate(glm::rotate(m_modelMatrixPowerup, glm::radians((float)1.0f), glm::vec3(0, 1, 0)), glm::vec3(0, 0, 0));
@@ -44,13 +70,23 @@ class Powerup {
 			else {
 				glUniform1i(4, GL_FALSE);
 			}
-
-			m_mesh_powerup.draw();
+			if (collected) {
+				countDown = countDown - 1;
+				if (countDown < 0) {
+					collected = false;
+				}
+			}
+			else {
+				m_mesh_powerup.draw();
+			}
 		}
 
 	private:
 		GPUMesh m_mesh_powerup;
 		Texture m_texture_powerup;
 		glm::mat4 m_modelMatrixPowerup;
+
+		bool collected;
+		int countDown;
 
 };
