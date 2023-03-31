@@ -70,7 +70,33 @@ class Application {
 				else if (action == GLFW_RELEASE)
 					onMouseReleased(button, mods);
 			});
+		// Bezier Curve
+		for (float i = 0.0; i < 1.0; i += 0.02) {
 
+			float x_coor[4] = { .08,.74,.81,.11 };
+			float y_coor[4] = { 1.3, 2.3, 3.3, 4.3 };
+
+			for (int i = 0; i < 4; i++) {
+				x_coor[i] = factorial(4) /
+					(factorial(i) * factorial(4 - i)) *
+					std::pow(1 - 0.3, 4 - i) *
+					std::pow(0.3, i) *
+					x_coor[i];
+			}
+			for (int i = 0; i < 4; i++) {
+				y_coor[i] = factorial(4) /
+					(factorial(i) * factorial(4 - i)) *
+					std::pow(1 - 0.3, 4 - i) *
+					std::pow(0.3, i) *
+					y_coor[i];
+			}
+
+			float final_x_coor = x_coor[0] + x_coor[1] + x_coor[2] + x_coor[3];
+			float final_y_coor = y_coor[0] + y_coor[1] + y_coor[2] + y_coor[3];
+
+			std::pair pair = std::make_pair(final_x_coor, final_y_coor);
+			bezier_curve.push_back(pair);
+		}
 		try {
 			ShaderBuilder defaultBuilder;
 			defaultBuilder.addStage(GL_VERTEX_SHADER,
@@ -285,6 +311,9 @@ class Application {
 		}
 	}
 
+	int factorial(int i) {
+		return 1? i==0 : i*factorial(i-1);
+	}
 
   private:
 	Window m_window;
@@ -327,6 +356,10 @@ class Application {
 	float materialShininess = 0.1f;
 	glm::vec4 texColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	float ambientIntensity = 0.1f;
+
+
+	//Bezier Curve
+	std::list<std::pair<float,float>> bezier_curve; //x, y
 };
 
 int main() {
