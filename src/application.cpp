@@ -22,6 +22,7 @@ DISABLE_WARNINGS_POP()
 #include <functional>
 #include <iostream>
 #include <vector>
+#include "powerup.cpp"
 
 class Application {
   public:
@@ -66,6 +67,7 @@ class Application {
 		m_mesh18("resources/Gunship_Model/gunship18.obj"),
 		m_mesh19("resources/Gunship_Model/gunship19.obj"),
 		m_mesh20("resources/Gunship_Model/gunship20.obj"),
+		powerup1("resources/cube-textured.obj", "resources/default.png"),
 		m_mesh_powerup("resources/cube-textured.obj"),
 		m_mesh_ground("resources/moonsurface/moonsurface.obj"),
 		m_texture("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png") ,
@@ -101,7 +103,6 @@ class Application {
 			shadowBuilder.addStage(GL_VERTEX_SHADER,
 								   "shaders/shadow_vert.glsl");
 			m_shadowShader = shadowBuilder.build();
-
 
 			ShaderBuilder toonBuilder;
 			toonBuilder.addStage(GL_VERTEX_SHADER,
@@ -319,24 +320,8 @@ class Application {
 			// ****** end mesh_2 logic ****** 
 
 			// ****** start mesh_powerup logic ****** 
-			m_modelMatrixPowerup = glm::translate(glm::rotate(m_modelMatrixPowerup, glm::radians((float) 3.0f), glm::vec3(0, 1, 0)) , glm::vec3(0, 0, 0));
 
-			const glm::mat4 mvpMatrixPowerup = m_projectionMatrix * m_viewMatrix * m_modelMatrixPowerup;
-			const glm::mat3 normalModelMatrixPowerup = glm::inverseTranspose(glm::mat3(m_modelMatrixPowerup));
-
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrixPowerup));
-			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrixPowerup));
-			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrixPowerup));
-			if (m_mesh_powerup.hasTextureCoords()) {
-				m_texture_powerup.bind(GL_TEXTURE1);
-				//m_mesh2.kdTexture.value().bind(GL_TEXTURE1);
-				glUniform1i(3, 1);
-				glUniform1i(4, GL_TRUE);
-			}
-			else {
-				glUniform1i(4, GL_FALSE);
-			}
-			m_mesh_powerup.draw();
+			powerup1.draw(m_projectionMatrix, m_viewMatrix);
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
@@ -458,6 +443,8 @@ class Application {
 	GPUMesh m_mesh19;
 	GPUMesh m_mesh20;
 	GPUMesh m_mesh_ground;
+	
+	Powerup powerup1;
 
 	GPUMesh m_mesh_powerup;
 
