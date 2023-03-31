@@ -24,6 +24,7 @@ DISABLE_WARNINGS_POP()
 #include <vector>
 #include "powerup.cpp"
 #include "player.cpp"
+#include <glm/gtx/string_cast.hpp>
 
 class Application {
   public:
@@ -49,7 +50,7 @@ class Application {
 		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		powerup1("resources/cube-textured.obj", "resources/default.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3(10.0f, 10.0f, 10.0f)), glm::vec3(5, 0, 5))),
-		m_mesh_powerup("resources/cube-textured.obj"),
+		m_mesh("resources/cube-textured.obj"),
 		m_mesh_ground("resources/moonsurface/moonsurface.obj"),
 		m_texture_ground_1("resources/moonsurface/moon.jpg") ,
 		m_texture_powerup("resources/default.png"),
@@ -194,7 +195,10 @@ class Application {
 			}
 
 			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
-			
+			std::cout << glm::to_string(player.getLocation()) << "\n";
+			std::cout << glm::to_string(powerup1.getLocation()) << "\n";
+			bool collected = powerup1.tryCollect(player.getLocation());
+			std::cout << collected << "\n";
 
 			// ****** start mesh_2 logic ****** 
 			m_modelMatrix2 = glm::rotate(m_modelMatrix2, glm::radians((float)dummyInteger), glm::vec3(0, 1, 0));
@@ -328,7 +332,7 @@ class Application {
 	Powerup powerup1;
 	Player player;
 
-	GPUMesh m_mesh_powerup;
+	GPUMesh m_mesh;
 
 	Texture m_texture_powerup;
 	Texture m_texture_ground_1;

@@ -46,6 +46,10 @@ class Player {
 			this->m_modelMatrix = m;
 		}
 
+		glm::vec3 getLocation() {
+			return m_modelMatrix * glm::vec4(0, 0, 0, 1);
+		}
+
 		void draw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, int framecounter) {
 			// ****** start playermesh logic ****** 
 			const glm::mat4 mvpMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
