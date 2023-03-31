@@ -14,7 +14,10 @@ add_executable(FinalProject
     "src/application.cpp"
     "src/texture.cpp"
 	"src/mesh.cpp"
-  "src/enemy.cpp" "src/powerup.cpp")
+	"src/enemy.cpp" 
+	"src/powerup.cpp"
+	)
+
 target_compile_features(FinalProject PRIVATE cxx_std_20)
 target_link_libraries(FinalProject PRIVATE CGFramework)
 enable_sanitizers(FinalProject)

@@ -160,8 +160,8 @@ class Application {
 
 
 			// movement logic main character/mesh_1
-			m_defaultShader.bind();
-
+			//m_defaultShader.bind();
+			m_toonShader.bind();
 			// forward/backward
 			if (goingForwards) { 
 				m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0, 0.0, -1));
