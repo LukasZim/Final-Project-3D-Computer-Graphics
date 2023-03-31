@@ -1,12 +1,12 @@
 # Blender 3.4.1 MTL File: 'UFO.blend'
 # www.blender.org
 
-newmtl Metal
-Ns 273.243774
+newmtl Material.004
+Ns 716.716125
 Ka 1.000000 1.000000 1.000000
-Kd 0.174257 0.174257 0.174257
-Ks 0.736364 0.736364 0.736364
+Ks 1.000000 1.000000 1.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
+map_Kd C:/Users/Haha/Downloads/reinforced-metal_metallic.png
