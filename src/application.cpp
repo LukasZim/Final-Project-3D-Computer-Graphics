@@ -51,7 +51,7 @@ class Application {
 		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
 		powerup1("resources/cube-textured.obj", "resources/default.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3(10.0f, 10.0f, 10.0f)), glm::vec3(5, 0, 5))),
 		enemy1("resources/enemyship/UFO.obj",
-			"resources/enemyship/Andorian.png", 
+			"resources/enemyship/reinforced-metal_metallic.png", 
 			glm::mat4{ 1.0f }, 
 			500, 
 			{ 8.0f, 74.0f, 81.0f, 11.0f } ,
