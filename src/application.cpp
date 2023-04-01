@@ -51,7 +51,7 @@ class Application {
 		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
 		powerup1("resources/cube-textured.obj", "resources/default.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3(10.0f, 10.0f, 10.0f)), glm::vec3(5, 0, 5))),
 		enemy1("resources/enemyship/UFO.obj",
-			"resources/enemyship/Andorian.png", 
+			"resources/enemyship/reinforced-metal_metallic.png", 
 			glm::mat4{ 1.0f }, 
 			500, 
 			{ 8.0f, 74.0f, 81.0f, 11.0f } ,
@@ -128,7 +128,15 @@ class Application {
 			// a signed integer)
 			ImGui::Checkbox("Top View", &topviewEnabled);
 			ImGui::End();
+			// movement logic main character/mesh_1
+//m_defaultShader.bind();
+			if (player.isEmpowered()) {
+				m_toonShader.bind();
 
+			}
+			else {
+				m_defaultShader.bind();
+			}
 
 			// Clear the screen
 			glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -149,9 +157,7 @@ class Application {
 			//glUniform4fv(12, 1, glm::value_ptr(texColor));
 
 
-			// movement logic main character/mesh_1
-			//m_defaultShader.bind();
-			m_toonShader.bind();
+
 			// forward/backward
 			if (goingForwards) { 
 				player.setModelMatrix(glm::translate(player.getModelMatrix(), glm::vec3(0.0, 0.0, -1)));
@@ -178,11 +184,18 @@ class Application {
 			}
 
 			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
+
+
+			m_defaultShader.bind();
+
 			std::cout << glm::to_string(player.getLocation()) << "\n";
 			std::cout << glm::to_string(enemy1.getLocation()) << "\n";
 			std::cout << glm::to_string(powerup1.getLocation()) << "\n";
 			bool collected = powerup1.tryCollect(player.getLocation());
 			std::cout << collected << "\n";
+			if (collected) {
+				player.empower();
+			}
 
 			// ****** start mesh_2 logic ****** 
 			m_modelMatrix2 = glm::rotate(m_modelMatrix2, glm::radians((float)dummyInteger), glm::vec3(0, 1, 0));

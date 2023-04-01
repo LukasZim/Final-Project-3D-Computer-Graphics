@@ -36,6 +36,8 @@ class Player {
 		{
 			//m_mesh = GPUMesh("resources/cube.obj");
 			m_modelMatrix = startMatrix;
+			empowered = false;
+			duration = 0;
 		}
 
 		glm::mat4 getModelMatrix() {
@@ -48,6 +50,18 @@ class Player {
 
 		glm::vec3 getLocation() {
 			return m_modelMatrix * glm::vec4(0, 0, 0, 1);
+		}
+
+		void empower() {
+			if (!empowered) {
+				m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3{ 4.0 });
+			}
+			empowered = true;
+			duration = 500;
+		}
+
+		bool isEmpowered() {
+			return empowered;
 		}
 
 		void draw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, int framecounter) {
@@ -71,11 +85,26 @@ class Player {
 			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
 			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
 
-			// give matrices to the shader
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
-			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
-			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 
+			if (empowered) {
+				glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
+				glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
+				glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
+
+				if (duration <= 0) {
+					empowered = false;
+					m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3{ 0.25 });
+				}
+				duration--;
+			}
+			else {
+
+				// give matrices to the shader
+				glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
+				glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
+				glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
+
+			}
 			// awful animation implementation :(
 			switch ((framecounter % 80) / 2) {
 			case 0:
@@ -160,11 +189,15 @@ class Player {
 				break;
 
 			}
+			
 		}
 
 	private:
 		Texture m_texture;
 		glm::mat4 m_modelMatrix;
+
+		bool empowered;
+		int duration;
 
 
 		GPUMesh m_mesh;
