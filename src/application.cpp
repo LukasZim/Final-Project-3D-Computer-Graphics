@@ -49,15 +49,15 @@ class Application {
 	Application()
 		: 
 		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
-		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		powerup1("resources/cube-textured.obj", "resources/default.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3(10.0f, 10.0f, 10.0f)), glm::vec3(5, 0, 5))),
-		enemy1("resources/enemyship/enemyship.obj",
+		enemy1("resources/enemyship/UFO.obj",
 			"resources/enemyship/Andorian.png", 
 			glm::mat4{ 1.0f }, 
-			50, 
-			{ -100.0f, -100.0f, 100.0f, 100.0f } ,
-			{ -100.0f, 100.0f, 100.0f, -100.0f }
+			500, 
+			{ 8.0f, 74.0f, 81.0f, 11.0f } ,
+			{ 130.0f, 230.0f, 330.0f, 430.0f }
 		),
+		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		m_mesh("resources/cube-textured.obj"),
 		m_mesh_ground("resources/moonsurface/moonsurface.obj"),
 		m_texture_ground_1("resources/moonsurface/moon.jpg") ,
@@ -179,6 +179,7 @@ class Application {
 
 			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 			std::cout << glm::to_string(player.getLocation()) << "\n";
+			std::cout << glm::to_string(enemy1.getLocation()) << "\n";
 			std::cout << glm::to_string(powerup1.getLocation()) << "\n";
 			bool collected = powerup1.tryCollect(player.getLocation());
 			std::cout << collected << "\n";
@@ -206,6 +207,7 @@ class Application {
 			// ****** end mesh_2 logic ****** 
 
 			// ****** start mesh_powerup logic ****** 
+			enemy1.draw(m_projectionMatrix, m_viewMatrix);
 
 			powerup1.draw(m_projectionMatrix, m_viewMatrix);
 

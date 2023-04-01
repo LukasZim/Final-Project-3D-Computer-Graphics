@@ -22,27 +22,29 @@ class Enemy {
 
 			// Bezier Curve
 			int n = x_coor.size();
-			for (float t = 0.0; t < 1.0; t += 1/movementSteps) {
+			for (float t = 0.0; t < 1.0; t += (float) 1.0f/movementSteps) {
+				
 
 				//float x_coor[4] = { .08,.74,.81,.11 };
 				//float y_coor[4] = { 1.3, 2.3, 3.3, 4.3 };
-
+				float x_total = 0;
+				float y_total = 0;
 				for (int i = 0; i < n; i++) {
 					auto var1 = factorial(n);
 					auto var2 = (factorial(i) * factorial(n - i));
 					auto var3 = std::pow(1 - t, n - i);
 					auto var4 = std::pow(t, i);
 					auto var5 = x_coor.at(i);
-					x_coor.at(i) = var1 / var2 * var3 * var4 * var5;
+					x_total += var1 / var2 * var3 * var4 * var5;
 				}
 				for (int i = 0; i < n; i++) {
-					y_coor.at(i) = factorial(n) / (factorial(i) * factorial(n - i)) * std::pow(1 - t, n - i) * std::pow(t, i) * y_coor.at(i);
+					y_total += factorial(n) / (factorial(i) * factorial(n - i)) * std::pow(1 - t, n - i) * std::pow(t, i) * y_coor.at(i);
 				}
 
 				float final_x_coor = std::accumulate(x_coor.begin(), x_coor.end(), 0.0f);
 				float final_y_coor = std::accumulate(y_coor.begin(), y_coor.end(), 0.0f);
 
-				std::pair pair = std::make_pair(final_x_coor, final_y_coor);
+				std::pair pair = std::make_pair(x_total, y_total);
 				bezier_curve.push_back(pair);
 			}
 		}
@@ -68,8 +70,12 @@ class Enemy {
 				glUniform1i(4, GL_FALSE);
 			}
 			m_mesh.draw();
-			steps = (steps + 1)%bezierSteps * slowDown;
+			steps = (steps + 1) % (bezierSteps * slowDown);
 			
+		}
+
+		glm::vec3 getLocation() {
+			return m_modelMatrix * glm::vec4(0, 0, 0, 1);
 		}
 	private:
 		GPUMesh m_mesh;
@@ -77,7 +83,7 @@ class Enemy {
 		Texture m_texture;
 		int steps;
 		int bezierSteps;
-		int slowDown = 10;
+		int slowDown = 1;
 
 		//Bezier Curve
 		std::vector<std::pair<float, float>> bezier_curve; //x, y
