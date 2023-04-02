@@ -1,0 +1,12 @@
+# Blender 3.4.1 MTL File: 'None'
+# www.blender.org
+
+newmtl Material.001
+Ns 250.000000
+Ka 0.465909 0.465909 0.465909
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd C:/Users/Haha/Documents/2022 School File/3D Graphics/Final Project/Final-Project-3D-Computer-Graphics/resources/Gunship_model/space-cruiser-panels2_normal-ogl.png
