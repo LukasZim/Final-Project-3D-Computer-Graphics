@@ -26,6 +26,7 @@ DISABLE_WARNINGS_POP()
 #include "player.cpp"
 #include <glm/gtx/string_cast.hpp>
 #include "enemy.cpp"
+#include "bullethandler.cpp"
 
 class Application {
   public:
@@ -38,6 +39,7 @@ class Application {
 	  bool goingLeft = false;
 	  bool goingBackwards = false;
 	  bool topviewEnabled = false;
+	  bool shooting = false;
 
 	  int endMouseX = 0;
 	  int endMouseY = 0;
@@ -58,6 +60,7 @@ class Application {
 			{ 130.0f, 230.0f, 330.0f, 430.0f }
 		),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
+		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/znwEF.png"),
 		m_mesh("resources/cube-textured.obj"),
 		m_mesh_ground("resources/moonsurface/moonsurface.obj"),
 		m_texture_ground_1("resources/moonsurface/moon.jpg") ,
@@ -172,8 +175,14 @@ class Application {
 			}
 			else if (goingRight) {
 				player.setModelMatrix(glm::translate(player.getModelMatrix(), glm::vec3(.7, 0.0, 0)));
-
 			}
+
+			//shooting
+			if (shooting && shootCooldown <= 0) {
+				bullethandler.createBullet(player.getModelMatrix());
+				shootCooldown = 30;
+			}
+			shootCooldown--;
 
 			// toggle camera
 			if (!topviewEnabled) {
@@ -185,14 +194,14 @@ class Application {
 
 			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 
-
+			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix);
 			m_defaultShader.bind();
 
-			std::cout << glm::to_string(player.getLocation()) << "\n";
-			std::cout << glm::to_string(enemy1.getLocation()) << "\n";
-			std::cout << glm::to_string(powerup1.getLocation()) << "\n";
+			//std::cout << glm::to_string(player.getLocation()) << "\n";
+			//std::cout << glm::to_string(enemy1.getLocation()) << "\n";
+			//std::cout << glm::to_string(powerup1.getLocation()) << "\n";
 			bool collected = powerup1.tryCollect(player.getLocation());
-			std::cout << collected << "\n";
+			//std::cout << collected << "\n";
 			if (collected) {
 				player.empower();
 			}
@@ -248,6 +257,9 @@ class Application {
 		if (key == 68) {
 			goingRight = true;
 		}
+		if (key == 32) {
+			shooting = true;
+		}
 	}
 
 	// In here you can handle key releases
@@ -267,6 +279,9 @@ class Application {
 		}
 		if (key == 68) {
 			goingRight = false;
+		}
+		if (key == 32) {
+			shooting = false;
 		}
 	}
 
@@ -330,13 +345,14 @@ class Application {
 	Powerup powerup1;
 	Player player;
 	Enemy enemy1;
+	BulletHandler bullethandler;
 
 	GPUMesh m_mesh;
 
 	Texture m_texture_powerup;
 	Texture m_texture_ground_1;
 	Texture m_texture_ground_2;
-
+	int shootCooldown = 30;
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
 		glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 1000.0f);
