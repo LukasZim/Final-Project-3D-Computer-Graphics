@@ -62,12 +62,20 @@ class Bullet {
 			else {
 				glUniform1i(4, GL_FALSE);
 			}
+			glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
+			(*m_mesh).draw();
+		}
+
+		void shadowDraw(glm::mat4 m_projectionMatrix, glm::vec3 lightPos, GPUMesh* m_mesh) {
+			lightMVP = m_projectionMatrix * glm::lookAt(lightPos, glm::vec3(0.0), glm::vec3(0, 1, 0)) * m_modelMatrix;
+			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP));
 			(*m_mesh).draw();
 		}
 
 
 	private:
 		glm::mat4 m_modelMatrix;
+		glm::mat4 lightMVP;
 
 		int speed;
 		int damage;

@@ -13,12 +13,49 @@ layout(location = 10) uniform vec3 materialSpecular;
 layout(location = 11) uniform float m_materialShininess;
 layout(location = 12) in vec4 texColor;
 
+// for shadow mapping
+layout(location = 13) uniform sampler2D texShadow;
+layout(location = 14) uniform mat4 lightMVP;
+
 in vec3 fragPosition;
 in vec3 fragNormal;
 in vec2 fragTexCoord;
 
 
 layout(location = 0) out vec4 fragColor;
+
+
+float CalcShadowFactorPCF(){
+    vec4 fragLightCoord = lightMVP * vec4(fragPosition, 1.0);
+
+    // Divide by w because fragLightCoord are homogeneous coordinates
+    fragLightCoord.xyz /= fragLightCoord.w;
+
+    // The resulting value is in NDC space (-1 to +1),
+    //  we transform them to texture space (0 to 1).
+    fragLightCoord.xyz = fragLightCoord.xyz * 0.5 + 0.5;
+
+    float TexelWidth = 1.0/ 1024;
+    float TexelHeight = 1.0/ 1024;
+
+    vec2 TexelSize = vec2(TexelWidth, TexelHeight);
+
+    float ShadowSum = 0.0;
+
+    for (int y = -1; y <= 1; y++){
+        for (int x = -1; x <= 1; x++){
+            vec2 Offset = vec2(x,y) * TexelSize;
+            float depth = texture(texShadow, fragLightCoord.xy + Offset).x;
+
+            if (depth + 0.0005 >= fragLightCoord.z){
+                ShadowSum += 1.0;
+            }
+        }
+    }
+
+    return ShadowSum / 9.0 * max(0.0, 2 * (0.5 - length(vec2(0.5, 0.5) - fragLightCoord.xy)));
+}
+
 
 void main()
 {
@@ -41,11 +78,11 @@ void main()
     
     vec3 finalColor = ambient + diffuse + specular;
     vec4 texColor = vec4(1.0);
-if (hasTexCoords) {
-    texColor = texture(colorMap, fragTexCoord);
-} else {
-    texColor = vec4(1.0);
-}
-fragColor = vec4(finalColor * texColor.rgb, 1.0);
+    if (hasTexCoords) {
+        texColor = texture(colorMap, fragTexCoord);
+    } else {
+        texColor = vec4(1.0);
+    }
+    fragColor = vec4(finalColor * texColor.rgb * CalcShadowFactorPCF(), 1.0);
 
 }
