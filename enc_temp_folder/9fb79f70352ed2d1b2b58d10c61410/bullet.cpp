@@ -64,8 +64,6 @@ class Bullet {
 			}
 			(*m_mesh).draw();
 		}
-
-
 	private:
 		glm::mat4 m_modelMatrix;
 

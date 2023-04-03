@@ -71,12 +71,7 @@ class Enemy {
 			}
 			m_mesh.draw();
 			steps = (steps + 1) % (bezierSteps * slowDown);
-		}
-
-		void shadowDraw(glm::mat4 m_projectionMatrix, glm::vec3 lightPos) {
-			const glm::mat4 mvp = m_projectionMatrix * glm::lookAt(lightPos, glm::vec3(0.0), glm::vec3(0, 1, 0)) * m_modelMatrix; 
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvp));
-			m_mesh.draw();
+			
 		}
 
 		glm::vec3 getLocation() {

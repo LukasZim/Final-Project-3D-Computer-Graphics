@@ -113,7 +113,6 @@ class Application {
 	}
 
 	void update() {
-
 		GLuint texShadow;
 		const int SHADOWTEX_WIDTH = 1024;
 		const int SHADOWTEX_HEIGHT = 1024;
@@ -128,43 +127,11 @@ class Application {
 		glTextureParameteri(texShadow, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTextureParameteri(texShadow, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		// === Create framebuffer for extra texture ===
-		GLuint framebuffer;
-		glCreateFramebuffers(1, &framebuffer);
-		glNamedFramebufferTexture(framebuffer, GL_DEPTH_ATTACHMENT, texShadow, 0);
-
 		int dummyInteger = 0;  // Initialized to 0
 		while (!m_window.shouldClose()) {
 			// This is your game loop
 			// Put your real-time logic and rendering in here
 			m_window.updateInput();
-			{
-				// Bind the off-screen framebuffer
-				glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-				// Clear the shadow map and set needed options
-				glClearDepth(1.0f);
-				glClear(GL_DEPTH_BUFFER_BIT);
-				glEnable(GL_DEPTH_TEST);
-
-				// Bind the shader
-				m_shadowShader.bind();
-
-				// Set viewport size
-				glViewport(0, 0, SHADOWTEX_WIDTH, SHADOWTEX_HEIGHT);
-
-				// .... HERE YOU MUST ADD THE CORRECT UNIFORMS FOR RENDERING THE SHADOW MAP
-				const glm::mat4 mvp = m_projectionMatrix * glm::lookAt(m_lightPosition, glm::vec3(0.0), glm::vec3(0,1,0)); // Assume model matrix is identity.
-				glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvp));
-
-
-				// Execute draw command
-				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
-
-				// Unbind the off-screen framebuffer
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-			}
 
 			// Use ImGui for easy input/output of ints, floats, strings, etc...
 			ImGui::Begin("Window");
