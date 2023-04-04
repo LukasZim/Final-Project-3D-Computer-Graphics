@@ -17,9 +17,9 @@ public:
         m_texture_snake(texturepath)
     {
         m_modelMatrixsnake_head = glm::scale(startMatrix, glm::vec3(30,30,30));
-        m_modelMatrixsnake_body1 = glm::translate(m_modelMatrixsnake_head, glm::vec3(0.0f,  0.0f, -head_length));
-        m_modelMatrixsnake_body2 = glm::translate(m_modelMatrixsnake_body1, glm::vec3(0.0f, 0.0f, -body1_length));
-        m_modelMatrixsnake_tail = glm::translate(m_modelMatrixsnake_body2, glm::vec3(0.0f,  0.0f, -body2_length));
+        m_modelMatrixsnake_body1 = glm::translate(m_modelMatrixsnake_head, glm::vec3(0.0f,  0.0f, -1.0f * head_length));
+        m_modelMatrixsnake_body2 = glm::translate(m_modelMatrixsnake_body1, glm::vec3(0.0f, 0.0f, -1.0f * body1_length));
+        m_modelMatrixsnake_tail = glm::translate(m_modelMatrixsnake_body2, glm::vec3(0.0f,  0.0f, -1.0f * body2_length));
     }
 
     // ... (other existing methods) ...
