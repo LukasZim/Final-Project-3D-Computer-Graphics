@@ -62,12 +62,9 @@ class Application {
 		),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/znwEF.png"),
-		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 10, 0))),
-		m_mesh("resources/cube-textured.obj"),
-		m_mesh_ground("resources/moonsurface/moonsurface.obj"),
-		m_texture_ground_1("resources/moonsurface/moon.jpg") ,
-		m_texture_powerup("resources/default.png"),
-		m_texture_ground_2("resources/test/forest_ground_04_diff_1k.jpg") {
+		//ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 30, 0))),
+		ground("resources/cube-textured.obj", "resources/default.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 2000.0 , 10 , 2000.0 }), glm::vec3(0,-2,0)))
+		{
 
 		m_window.registerKeyCallback(
 			[this](int key, int scancode, int action, int mods) {
@@ -130,9 +127,10 @@ class Application {
 		glTextureParameteri(texShadow, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTextureParameteri(texShadow, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+
 		// === Create framebuffer for extra texture ===
 		GLuint framebuffer;
-		glCreateFramebuffers(1, &framebuffer);
+		glCreateFramebuffers(12, &framebuffer);
 		glNamedFramebufferTexture(framebuffer, GL_DEPTH_ATTACHMENT, texShadow, 0);
 
 		int dummyInteger = 0;  // Initialized to 0
@@ -140,37 +138,7 @@ class Application {
 			// This is your game loop
 			// Put your real-time logic and rendering in here
 			m_window.updateInput();
-			{
-				// Bind the off-screen framebuffer
-				glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-				// Clear the shadow map and set needed options
-				glClearDepth(1.0f);
-				glClear(GL_DEPTH_BUFFER_BIT);
-				glEnable(GL_DEPTH_TEST);
-
-				// Bind the shader
-				m_shadowShader.bind();
-
-				// Set viewport size
-				glViewport(0, 0, SHADOWTEX_WIDTH, SHADOWTEX_HEIGHT);
-
-				// .... HERE YOU MUST ADD THE CORRECT UNIFORMS FOR RENDERING THE SHADOW MAP
-
-				glm::mat4 shadowViewMatrix = glm::lookAt(m_lightPosition, glm::vec3(1.0), glm::vec3(0, 1, 0));
-
-				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
-				player.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
-				ground.shadowDraw(m_projectionMatrix, shadowViewMatrix);
-				bullethandler.shadowDraw(m_projectionMatrix, shadowViewMatrix);
-				enemy1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
-				// Execute draw command
-				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
-
-				// Unbind the off-screen framebuffer
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-			}
+			
 
 			// Use ImGui for easy input/output of ints, floats, strings, etc...
 			ImGui::Begin("Window");
@@ -185,38 +153,11 @@ class Application {
 			ImGui::End();
 			// movement logic main character/mesh_1
 //m_defaultShader.bind();
-			if (player.isEmpowered()) {
-				m_toonShader.bind();
-
-			}
-			else {
-				m_defaultShader.bind();
-			}
-
-			// Clear the framebuffer to black and depth to maximum value
-			glClearDepth(1.0f);
-			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glDisable(GL_CULL_FACE);
-			glEnable(GL_DEPTH_TEST);
-
-			//Newly Added 3.27.2023
-			// Set light properties
-			glUniform3fv(5, 1, glm::value_ptr(m_lightPosition));
-			glUniform3fv(6, 1, glm::value_ptr(m_lightColor));
-
-			// Set material properties
-			glUniform3fv(8, 1, glm::value_ptr(m_materialAmbient));
-			glUniform3fv(9, 1, glm::value_ptr(m_materialDiffuse));
-			glUniform3fv(10, 1, glm::value_ptr(m_materialSpecular));
-			glUniform1f(11, materialShininess);
-			//glUniform4fv(12, 1, glm::value_ptr(texColor));
 
 
-			// Bind the shadow map to texture slot 0
-			glActiveTexture(GL_TEXTURE10);
-			glBindTexture(GL_TEXTURE_2D, texShadow);
-			glUniform1i(13, 10);
+
+
+
 
 			// forward/backward
 			if (goingForwards) { 
@@ -240,36 +181,95 @@ class Application {
 				shootCooldown = 30;
 			}
 			shootCooldown--;
+			glm::mat4 shadowViewMatrix = glm::lookAt(m_lightPosition, m_lightPosition + glm::vec3(-1, -1, 0), glm::vec3(0, 1, 0));
 
 			// toggle camera
 			if (!topviewEnabled) {
 				m_viewMatrix = glm::lookAt(glm::vec3(player.getModelMatrix() * glm::vec4(0, 3, 6, 1)), glm::vec3(player.getModelMatrix() * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 			}
 			else {
-				m_viewMatrix = glm::lookAt(glm::vec3(player.getModelMatrix() * glm::vec4(0, 60, 6, 1)), glm::vec3(player.getModelMatrix() * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
+				//m_viewMatrix = glm::lookAt(glm::vec3(player.getModelMatrix() * glm::vec4(0, 60, 6, 1)), glm::vec3(player.getModelMatrix() * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 				//m_viewMatrix = glm::lookAt(m_lightPosition, glm::vec3(0.0), glm::vec3(0, 1, 0));
+				m_viewMatrix = shadowViewMatrix;
 			}
 
-			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 
-			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix);
-			m_defaultShader.bind();
+			{
+				// Bind the off-screen framebuffer
+				glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-			//std::cout << glm::to_string(player.getLocation()) << "\n";
-			//std::cout << glm::to_string(enemy1.getLocation()) << "\n";
-			//std::cout << glm::to_string(powerup1.getLocation()) << "\n";
+				// Clear the shadow map and set needed options
+				glClearDepth(1.0f);
+				glClear(GL_DEPTH_BUFFER_BIT);
+				glEnable(GL_DEPTH_TEST);
+
+				// Bind the shader
+				m_shadowShader.bind();
+
+				// Set viewport size
+				glViewport(0, 0, SHADOWTEX_WIDTH, SHADOWTEX_HEIGHT);
+
+				// .... HERE YOU MUST ADD THE CORRECT UNIFORMS FOR RENDERING THE SHADOW MAP
+
+				//glDisable(GL_CULL_FACE);
+				player.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
+				ground.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				bullethandler.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				enemy1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+
+				// Execute draw command
+				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
+				//glEnable(GL_CULL_FACE);
+				// Unbind the off-screen framebuffer
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			}
+
+
+			if (player.isEmpowered()) {
+				m_toonShader.bind();
+
+			}
+			else {
+				m_defaultShader.bind();
+			}
+
+			// Clear the framebuffer to black and depth to maximum value
+			glClearDepth(1.0f);
+			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//glDisable(GL_CULL_FACE);
+			glEnable(GL_DEPTH_TEST);
+
+			// Bind the shadow map to texture slot 0
+			glActiveTexture(GL_TEXTURE10);
+			glBindTexture(GL_TEXTURE_2D, texShadow);
+			glUniform1i(13, 10);
+
+			//Newly Added 3.27.2023
+			// Set light properties
+			glUniform3fv(5, 1, glm::value_ptr(m_lightPosition));
+			glUniform3fv(6, 1, glm::value_ptr(m_lightColor));
+
+			// Set material properties
+			glUniform3fv(8, 1, glm::value_ptr(m_materialAmbient));
+			glUniform3fv(9, 1, glm::value_ptr(m_materialDiffuse));
+			glUniform3fv(10, 1, glm::value_ptr(m_materialSpecular));
+			glUniform1f(11, materialShininess);
+			
 			bool collected = powerup1.tryCollect(player.getLocation());
-			//std::cout << collected << "\n";
+
 			if (collected) {
 				player.empower();
 			}
+			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 
+			//m_defaultShader.bind();
+
+			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix);
 			ground.draw(m_projectionMatrix, m_viewMatrix);
-			// ****** end mesh_2 logic ****** 
-
-			// ****** start mesh_powerup logic ****** 
 			enemy1.draw(m_projectionMatrix, m_viewMatrix);
-
 			powerup1.draw(m_projectionMatrix, m_viewMatrix);
 
 			// Processes input and swaps the window buffer
@@ -379,7 +379,6 @@ class Application {
 	Shader m_shadowShader;
 	Shader m_toonShader;
 
-	GPUMesh m_mesh_ground;
 	
 	Powerup powerup1;
 	Player player;
@@ -387,25 +386,19 @@ class Application {
 	BulletHandler bullethandler;
 	Environment ground;
 
-	GPUMesh m_mesh;
 
-	Texture m_texture_powerup;
-	Texture m_texture_ground_1;
-	Texture m_texture_ground_2;
 	int shootCooldown = 30;
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
-		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 1000.0f);
+		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 	glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 
-	glm::mat4 m_modelMatrix2 = glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 5, 0));
-	glm::mat4 m_modelMatrixPowerup = glm::scale(glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 5, 0)), glm::vec3{10.0f});
 
 
 	// Light properties
 	
 
-	glm::vec3 m_lightPosition = glm::vec3(200.0f, 200.0f, 2.0f);
+	glm::vec3 m_lightPosition = glm::vec3(20.0f, 20.0f, 2.0f);
 	glm::vec3 m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	// Material properties
@@ -414,7 +407,6 @@ class Application {
 	glm::vec3 m_materialSpecular = glm::vec3(0.7f, 0.7f, 0.7f);
 	float materialShininess = 0.1f;
 	glm::vec4 texColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	float ambientIntensity = 0.1f;
 
 
 };

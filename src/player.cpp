@@ -84,8 +84,8 @@ class Player {
 			}
 
 			// Set view position
-			glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
-			glUniform3fv(7, 1, glm::value_ptr(viewPosition));
+			//glm::vec3 viewPosition = glm::vec3(m_viewMatrix[3]);
+			//glUniform3fv(7, 1, glm::value_ptr(viewPosition));
 
 
 			if (empowered) {

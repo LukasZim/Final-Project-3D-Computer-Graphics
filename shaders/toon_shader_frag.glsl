@@ -43,7 +43,7 @@ float CalcShadowFactorPCF(){
             vec2 Offset = vec2(x,y) * TexelSize;
             float depth = texture(texShadow, fragLightCoord.xy + Offset).x;
 
-            if (depth + 0.001 >= fragLightCoord.z){
+            if (depth + (0.001 / length(fragPosition - lightPosition)) >= fragLightCoord.z){
                 ShadowSum += 1.0;
             }
         }
