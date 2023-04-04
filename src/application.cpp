@@ -27,6 +27,7 @@ DISABLE_WARNINGS_POP()
 #include <glm/gtx/string_cast.hpp>
 #include "enemy.cpp"
 #include "bullethandler.cpp"
+#include "snake.cpp"
 
 class Application {
   public:
@@ -60,7 +61,12 @@ class Application {
 			{ 130.0f, 230.0f, 330.0f, 430.0f }
 		),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
-		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/znwEF.png"),
+		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/pure_blue.png"),
+		//Snake(std::string meshpath_head, std::string meshpath_body1, std::string meshpath_body2, std::string meshpath_tail, std::string texturepath, glm::mat4 startMatrix)
+		snake("resources/snake/snake1.obj", "resources/snake/snake2.obj", "resources/snake/snake2.obj", "resources/snake/snake3.obj", "resources/Bullet_Ours/pure_blue.png", glm::mat4(1.0f)),
+
+
+
 		m_mesh("resources/cube-textured.obj"),
 		m_mesh_ground("resources/moonsurface/moonsurface.obj"),
 		m_texture_ground_1("resources/moonsurface/moon.jpg") ,
@@ -241,6 +247,9 @@ class Application {
 			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 
 			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix);
+
+			snake.draw(m_projectionMatrix, m_viewMatrix);
+
 			m_defaultShader.bind();
 
 			//std::cout << glm::to_string(player.getLocation()) << "\n";
@@ -392,6 +401,8 @@ class Application {
 	Player player;
 	Enemy enemy1;
 	BulletHandler bullethandler;
+	Snake snake;
+
 
 	GPUMesh m_mesh;
 
@@ -421,7 +432,7 @@ class Application {
 	float materialShininess = 0.1f;
 	glm::vec4 texColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	float ambientIntensity = 0.1f;
-
+	
 
 };
 

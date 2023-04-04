@@ -12,7 +12,7 @@ class Player {
 		Player(std::string texturepath, glm::mat4 startMatrix)
 			: 
 			m_mesh("resources/Gunship_Model/gunship1.obj"),
-			m_texture(texturepath),
+			m_texture(texturepath)/*,
 			m_mesh1("resources/Gunship_Model/gunship1.obj"),
 			m_mesh2("resources/Gunship_Model/gunship2.obj"),
 			m_mesh3("resources/Gunship_Model/gunship3.obj"),
@@ -32,7 +32,7 @@ class Player {
 			m_mesh17("resources/Gunship_Model/gunship17.obj"),
 			m_mesh18("resources/Gunship_Model/gunship18.obj"),
 			m_mesh19("resources/Gunship_Model/gunship19.obj"),
-			m_mesh20("resources/Gunship_Model/gunship20.obj")
+			m_mesh20("resources/Gunship_Model/gunship20.obj")*/
 		{
 			//m_mesh = GPUMesh("resources/cube.obj");
 			m_modelMatrix = startMatrix;
@@ -110,6 +110,8 @@ class Player {
 		}
 
 		void drawCorrectModel(int framecounter) {
+			m_mesh.draw();
+			/*
 			// awful animation implementation :(
 			switch ((framecounter % 80) / 2) {
 			case 0:
@@ -192,8 +194,8 @@ class Player {
 			case 39:
 				m_mesh20.draw();
 				break;
-
-			}
+				
+			}*/
 		}
 
 		void shadowDraw(glm::mat4 m_projectionMatrix, glm::vec3 lightPos, int framecounter) {
@@ -211,7 +213,7 @@ class Player {
 
 
 		GPUMesh m_mesh;
-		GPUMesh m_mesh1;
+		/*GPUMesh m_mesh1;
 		GPUMesh m_mesh2;
 		GPUMesh m_mesh3;
 		GPUMesh m_mesh4;
@@ -230,6 +232,6 @@ class Player {
 		GPUMesh m_mesh17;
 		GPUMesh m_mesh18;
 		GPUMesh m_mesh19;
-		GPUMesh m_mesh20;
+		GPUMesh m_mesh20;*/
 
 };
