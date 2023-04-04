@@ -59,8 +59,8 @@ private:
     glm::mat4 m_modelMatrixsnake_body1;
     glm::mat4 m_modelMatrixsnake_body2;
     glm::mat4 m_modelMatrixsnake_tail;
-    int head_length = 1;
-    int body1_length = 1;
-    int body2_length = 1;
-    int tail_length = 1;
+    int head_length = 1.0f;
+    int body1_length = 1.0f;
+    int body2_length = 1.0f;
+    int tail_length = 1.0f;
 };
