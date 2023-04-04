@@ -157,12 +157,13 @@ class Application {
 
 				// .... HERE YOU MUST ADD THE CORRECT UNIFORMS FOR RENDERING THE SHADOW MAP
 
-				powerup1.shadowDraw(m_projectionMatrix, m_lightPosition);
+				glm::mat4 shadowViewMatrix = glm::lookAt(m_lightPosition, glm::vec3(1.0), glm::vec3(0, 1, 0));
 
-				player.shadowDraw(m_projectionMatrix, m_lightPosition, framecounter);
-				ground.shadowDraw(m_projectionMatrix, m_lightPosition);
-				bullethandler.shadowDraw(m_projectionMatrix, m_lightPosition);
-				enemy1.shadowDraw(m_projectionMatrix, m_lightPosition);
+				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				player.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
+				ground.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				bullethandler.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				enemy1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				// Execute draw command
 				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
 
@@ -394,7 +395,7 @@ class Application {
 	int shootCooldown = 30;
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
-		glm::perspective(glm::radians(120.0f), 1.0f, 0.1f, 1000.0f);
+		glm::perspective(glm::radians(80.0f), 1.0f, 0.1f, 1000.0f);
 	glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	glm::mat4 m_modelMatrix2 = glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 5, 0));
@@ -404,7 +405,7 @@ class Application {
 	// Light properties
 	
 
-	glm::vec3 m_lightPosition = glm::vec3(20.0f, 20.0f, 2.0f);
+	glm::vec3 m_lightPosition = glm::vec3(200.0f, 200.0f, 2.0f);
 	glm::vec3 m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	// Material properties

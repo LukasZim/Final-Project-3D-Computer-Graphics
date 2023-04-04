@@ -29,11 +29,11 @@ public:
 		}
 	}
 
-	void shadowDraw(glm::mat4 m_projectionMatrix, glm::vec3 lightPos) {
+	void shadowDraw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix) {
 
 		std::list<Bullet>::iterator i = bullets.begin();
 		while (i != bullets.end()) {
-			(*i).shadowDraw(m_projectionMatrix, lightPos, &m_mesh);
+			(*i).shadowDraw(m_projectionMatrix, m_viewMatrix, &m_mesh);
 			++i;
 		}
 	}
