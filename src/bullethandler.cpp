@@ -28,16 +28,6 @@ public:
 			}
 		}
 	}
-
-	void shadowDraw(glm::mat4 m_projectionMatrix, glm::vec3 lightPos) {
-
-		std::list<Bullet>::iterator i = bullets.begin();
-		while (i != bullets.end()) {
-			(*i).shadowDraw(m_projectionMatrix, lightPos, &m_mesh);
-			++i;
-		}
-	}
-
 private:
 	GPUMesh m_mesh;
 	Texture m_texture;

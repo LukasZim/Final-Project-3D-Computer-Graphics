@@ -69,14 +69,13 @@ class Enemy {
 			else {
 				glUniform1i(4, GL_FALSE);
 			}
-			glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
 			m_mesh.draw();
 			steps = (steps + 1) % (bezierSteps * slowDown);
 		}
 
 		void shadowDraw(glm::mat4 m_projectionMatrix, glm::vec3 lightPos) {
-			lightMVP = m_projectionMatrix * glm::lookAt(lightPos, glm::vec3(0.0), glm::vec3(0, 1, 0)) * m_modelMatrix; 
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP));
+			const glm::mat4 mvp = m_projectionMatrix * glm::lookAt(lightPos, glm::vec3(0.0), glm::vec3(0, 1, 0)) * m_modelMatrix; 
+			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvp));
 			m_mesh.draw();
 		}
 
@@ -86,7 +85,6 @@ class Enemy {
 	private:
 		GPUMesh m_mesh;
 		glm::mat4 m_modelMatrix;
-		glm::mat4 lightMVP;
 		Texture m_texture;
 		int steps;
 		int bezierSteps;
