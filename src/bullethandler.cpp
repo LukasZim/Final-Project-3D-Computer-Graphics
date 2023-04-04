@@ -37,6 +37,7 @@ public:
 			++i;
 		}
 	}
+
 private:
 	GPUMesh m_mesh;
 	Texture m_texture;

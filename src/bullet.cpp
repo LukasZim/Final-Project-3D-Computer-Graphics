@@ -75,6 +75,7 @@ class Bullet {
 
 	private:
 		glm::mat4 m_modelMatrix;
+		glm::mat4 lightMVP;
 
 		int speed;
 		int damage;

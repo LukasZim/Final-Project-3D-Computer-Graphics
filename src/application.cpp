@@ -27,6 +27,7 @@ DISABLE_WARNINGS_POP()
 #include <glm/gtx/string_cast.hpp>
 #include "enemy.cpp"
 #include "bullethandler.cpp"
+#include "environment.cpp"
 
 class Application {
   public:
@@ -61,6 +62,7 @@ class Application {
 		),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/znwEF.png"),
+		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 10, 0))),
 		m_mesh("resources/cube-textured.obj"),
 		m_mesh_ground("resources/moonsurface/moonsurface.obj"),
 		m_texture_ground_1("resources/moonsurface/moon.jpg") ,
@@ -154,8 +156,6 @@ class Application {
 				glViewport(0, 0, SHADOWTEX_WIDTH, SHADOWTEX_HEIGHT);
 
 				// .... HERE YOU MUST ADD THE CORRECT UNIFORMS FOR RENDERING THE SHADOW MAP
-				const glm::mat4 mvp = m_projectionMatrix * glm::lookAt(m_lightPosition, glm::vec3(0.0), glm::vec3(0,1,0)); // Assume model matrix is identity.
-				glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvp));
 
 				glm::mat4 shadowViewMatrix = glm::lookAt(m_lightPosition, glm::vec3(1.0), glm::vec3(0, 1, 0));
 
@@ -164,7 +164,6 @@ class Application {
 				ground.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				bullethandler.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				enemy1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
-
 				// Execute draw command
 				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
 
@@ -194,10 +193,11 @@ class Application {
 				m_defaultShader.bind();
 			}
 
-			// Clear the screen
-			glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+			// Clear the framebuffer to black and depth to maximum value
+			glClearDepth(1.0f);
+			glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+			glDisable(GL_CULL_FACE);
 			glEnable(GL_DEPTH_TEST);
 
 			//Newly Added 3.27.2023
@@ -213,6 +213,10 @@ class Application {
 			//glUniform4fv(12, 1, glm::value_ptr(texColor));
 
 
+			// Bind the shadow map to texture slot 0
+			glActiveTexture(GL_TEXTURE10);
+			glBindTexture(GL_TEXTURE_2D, texShadow);
+			glUniform1i(13, 10);
 
 			// forward/backward
 			if (goingForwards) { 
@@ -243,6 +247,7 @@ class Application {
 			}
 			else {
 				m_viewMatrix = glm::lookAt(glm::vec3(player.getModelMatrix() * glm::vec4(0, 60, 6, 1)), glm::vec3(player.getModelMatrix() * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
+				//m_viewMatrix = glm::lookAt(m_lightPosition, glm::vec3(0.0), glm::vec3(0, 1, 0));
 			}
 
 			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
@@ -259,26 +264,7 @@ class Application {
 				player.empower();
 			}
 
-			// ****** start mesh_2 logic ****** 
-			m_modelMatrix2 = glm::rotate(m_modelMatrix2, glm::radians((float)dummyInteger), glm::vec3(0, 1, 0));
-
-			const glm::mat4 mvpMatrix2 = m_projectionMatrix * m_viewMatrix * m_modelMatrix2;
-			const glm::mat3 normalModelMatrix2 = glm::inverseTranspose(glm::mat3(m_modelMatrix2));
-
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix2));
-			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix2));
-			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix2));
-			if (m_mesh_ground.hasTextureCoords()) {
-				m_texture_ground_1.bind(GL_TEXTURE1);
-				//m_mesh2.kdTexture.value().bind(GL_TEXTURE1);
-				glUniform1i(3, 1);
-				glUniform1i(4, GL_TRUE);
-			}
-			else {
-				glUniform1i(4, GL_FALSE);
-			}
-
-			m_mesh_ground.draw();
+			ground.draw(m_projectionMatrix, m_viewMatrix);
 			// ****** end mesh_2 logic ****** 
 
 			// ****** start mesh_powerup logic ****** 
@@ -399,6 +385,7 @@ class Application {
 	Player player;
 	Enemy enemy1;
 	BulletHandler bullethandler;
+	Environment ground;
 
 	GPUMesh m_mesh;
 
@@ -418,8 +405,7 @@ class Application {
 	// Light properties
 	
 
-
-	glm::vec3 m_lightPosition = glm::vec3(20.0f, 2.0f, 2.0f);
+	glm::vec3 m_lightPosition = glm::vec3(200.0f, 200.0f, 2.0f);
 	glm::vec3 m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	// Material properties

@@ -69,6 +69,7 @@ class Enemy {
 			else {
 				glUniform1i(4, GL_FALSE);
 			}
+			glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
 			m_mesh.draw();
 			steps = (steps + 1) % (bezierSteps * slowDown);
 		}
@@ -85,6 +86,7 @@ class Enemy {
 	private:
 		GPUMesh m_mesh;
 		glm::mat4 m_modelMatrix;
+		glm::mat4 lightMVP;
 		Texture m_texture;
 		int steps;
 		int bezierSteps;

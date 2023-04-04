@@ -12,7 +12,8 @@ class Player {
 		Player(std::string texturepath, glm::mat4 startMatrix)
 			: 
 			m_mesh("resources/Gunship_Model/gunship1.obj"),
-			m_texture(texturepath),
+			m_texture(texturepath)/*,
+			
 			m_mesh1("resources/Gunship_Model/gunship1.obj"),
 			m_mesh2("resources/Gunship_Model/gunship2.obj"),
 			m_mesh3("resources/Gunship_Model/gunship3.obj"),
@@ -33,6 +34,7 @@ class Player {
 			m_mesh18("resources/Gunship_Model/gunship18.obj"),
 			m_mesh19("resources/Gunship_Model/gunship19.obj"),
 			m_mesh20("resources/Gunship_Model/gunship20.obj")
+			*/
 		{
 			//m_mesh = GPUMesh("resources/cube.obj");
 			m_modelMatrix = startMatrix;
@@ -105,12 +107,15 @@ class Player {
 				glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 
 			}
+			glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
 			drawCorrectModel(framecounter);
 			
 		}
 
 		void drawCorrectModel(int framecounter) {
+			m_mesh.draw();
 			// awful animation implementation :(
+			/*
 			switch ((framecounter % 80) / 2) {
 			case 0:
 			case 1:
@@ -194,6 +199,7 @@ class Player {
 				break;
 
 			}
+			*/
 		}
 
 		void shadowDraw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, int framecounter) {
@@ -205,12 +211,14 @@ class Player {
 	private:
 		Texture m_texture;
 		glm::mat4 m_modelMatrix;
+		glm::mat4 lightMVP;
 
 		bool empowered;
 		int duration;
 
 
 		GPUMesh m_mesh;
+		/*
 		GPUMesh m_mesh1;
 		GPUMesh m_mesh2;
 		GPUMesh m_mesh3;
@@ -231,5 +239,6 @@ class Player {
 		GPUMesh m_mesh18;
 		GPUMesh m_mesh19;
 		GPUMesh m_mesh20;
+		*/
 
 };
