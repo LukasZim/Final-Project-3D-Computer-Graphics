@@ -105,11 +105,6 @@ class Player {
 				glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 
 			}
-			drawCorrectModel(framecounter);
-			
-		}
-
-		void drawCorrectModel(int framecounter) {
 			// awful animation implementation :(
 			switch ((framecounter % 80) / 2) {
 			case 0:
@@ -194,12 +189,7 @@ class Player {
 				break;
 
 			}
-		}
-
-		void shadowDraw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, int framecounter) {
-			lightMVP = m_projectionMatrix *m_viewMatrix * m_modelMatrix;
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP));
-			drawCorrectModel(framecounter);
+			
 		}
 
 	private:

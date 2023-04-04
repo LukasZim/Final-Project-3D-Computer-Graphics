@@ -53,7 +53,7 @@ class Powerup {
 		}*/
 
 		void draw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix) {
-
+			m_modelMatrixPowerup = glm::translate(glm::rotate(m_modelMatrixPowerup, glm::radians((float)1.0f), glm::vec3(0, 1, 0)), glm::vec3(0, 0, 0));
 
 			const glm::mat4 mvpMatrixPowerup = m_projectionMatrix * m_viewMatrix * m_modelMatrixPowerup;
 			const glm::mat3 normalModelMatrixPowerup = glm::inverseTranspose(glm::mat3(m_modelMatrixPowerup));
@@ -79,15 +79,6 @@ class Powerup {
 			else {
 				m_mesh_powerup.draw();
 			}
-		}
-		
-		void shadowDraw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix) {
-			m_modelMatrixPowerup = glm::translate(glm::rotate(m_modelMatrixPowerup, glm::radians(1.0f), glm::vec3(0, 1, 0)), glm::vec3(0, 0, 0));
-
-			lightMVP = m_projectionMatrix * m_viewMatrix * m_modelMatrixPowerup;
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP));
-
-			m_mesh_powerup.draw();
 		}
 
 	private:

@@ -62,17 +62,8 @@ class Bullet {
 			else {
 				glUniform1i(4, GL_FALSE);
 			}
-			glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
 			(*m_mesh).draw();
 		}
-
-		void shadowDraw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, GPUMesh* m_mesh) {
-			lightMVP = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP));
-			(*m_mesh).draw();
-		}
-
-
 	private:
 		glm::mat4 m_modelMatrix;
 
