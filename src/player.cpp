@@ -13,6 +13,7 @@ class Player {
 			: 
 			m_mesh("resources/Gunship_Model/gunship1.obj"),
 			m_texture(texturepath)/*,
+			
 			m_mesh1("resources/Gunship_Model/gunship1.obj"),
 			m_mesh2("resources/Gunship_Model/gunship2.obj"),
 			m_mesh3("resources/Gunship_Model/gunship3.obj"),
@@ -32,7 +33,8 @@ class Player {
 			m_mesh17("resources/Gunship_Model/gunship17.obj"),
 			m_mesh18("resources/Gunship_Model/gunship18.obj"),
 			m_mesh19("resources/Gunship_Model/gunship19.obj"),
-			m_mesh20("resources/Gunship_Model/gunship20.obj")*/
+			m_mesh20("resources/Gunship_Model/gunship20.obj")
+			*/
 		{
 			//m_mesh = GPUMesh("resources/cube.obj");
 			m_modelMatrix = startMatrix;
@@ -105,14 +107,15 @@ class Player {
 				glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 
 			}
+			glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
 			drawCorrectModel(framecounter);
 			
 		}
 
 		void drawCorrectModel(int framecounter) {
 			m_mesh.draw();
-			/*
 			// awful animation implementation :(
+			/*
 			switch ((framecounter % 80) / 2) {
 			case 0:
 			case 1:
@@ -194,26 +197,29 @@ class Player {
 			case 39:
 				m_mesh20.draw();
 				break;
-				
-			}*/
+
+			}
+			*/
 		}
 
 		void shadowDraw(glm::mat4 m_projectionMatrix, glm::vec3 lightPos, int framecounter) {
-			const glm::mat4 mvp = m_projectionMatrix * glm::lookAt(lightPos, glm::vec3(0.0), glm::vec3(0, 1, 0)) * m_modelMatrix;
-			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvp));
+			lightMVP = m_projectionMatrix * glm::lookAt(lightPos, glm::vec3(0.0), glm::vec3(0, 1, 0)) * m_modelMatrix;
+			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP));
 			drawCorrectModel(framecounter);
 		}
 
 	private:
 		Texture m_texture;
 		glm::mat4 m_modelMatrix;
+		glm::mat4 lightMVP;
 
 		bool empowered;
 		int duration;
 
 
 		GPUMesh m_mesh;
-		/*GPUMesh m_mesh1;
+		/*
+		GPUMesh m_mesh1;
 		GPUMesh m_mesh2;
 		GPUMesh m_mesh3;
 		GPUMesh m_mesh4;
@@ -232,6 +238,7 @@ class Player {
 		GPUMesh m_mesh17;
 		GPUMesh m_mesh18;
 		GPUMesh m_mesh19;
-		GPUMesh m_mesh20;*/
+		GPUMesh m_mesh20;
+		*/
 
 };
