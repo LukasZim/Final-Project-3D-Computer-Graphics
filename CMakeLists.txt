@@ -18,7 +18,7 @@ add_executable(FinalProject
 	"src/player.cpp"
 	"src/enemy.cpp"
 	"src/bullet.cpp"
-	"src/snake.cpp"
+	"src/planet.cpp"
  "src/bullethandler.cpp")
 
 target_compile_features(FinalProject PRIVATE cxx_std_20)
