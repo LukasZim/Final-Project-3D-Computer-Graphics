@@ -29,6 +29,7 @@ DISABLE_WARNINGS_POP()
 #include "environment.cpp"
 #include "snake.cpp"
 #include "planet.cpp"
+#include "robot.cpp"
 
 class Application {
   public:
@@ -61,6 +62,7 @@ class Application {
 			{ 8.0f, 74.0f, 81.0f, 11.0f } ,
 			{ 130.0f, 230.0f, 330.0f, 430.0f }
 		),
+		robot(glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 20.0 }), glm::vec3(-10, 0, 0))),
 		planets("resources/ceres/ceres.obj", "resources/ficunatus/ficunatus.obj", "resources/jupiter/jupiter.obj", "resources/venus/venus.obj", //4 objs
 			"resources/ceres/ceres.jpg", "resources/ficunatus/ficunatus.jpg", "resources/jupiter/jupiter.jpg", "resources/venus/venus.jpg",      //4 textures    
 			glm::mat4(1.0f)),
@@ -185,7 +187,8 @@ class Application {
 
 			//shooting
 			if (shooting && shootCooldown <= 0) {
-				bullethandler.createBullet(player.getModelMatrix(), true);
+				bullethandler.createBullet(glm::translate(player.getModelMatrix(), glm::vec3(1, 0, 0)), true);
+				bullethandler.createBullet(glm::translate(player.getModelMatrix(), glm::vec3(-1,0,0)), true);
 				shootCooldown = 30;
 			}
 			shootCooldown--;
@@ -231,7 +234,7 @@ class Application {
 				enemy1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				snake.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
-
+				robot.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				// Execute draw command
 				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
 				//glEnable(GL_CULL_FACE);
@@ -290,6 +293,7 @@ class Application {
 			powerup1.draw(m_projectionMatrix, m_viewMatrix);
 			snake.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 			planets.draw(m_projectionMatrix, m_viewMatrix);
+			robot.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
@@ -408,6 +412,7 @@ class Application {
 	Light secondaryLight;
 	Snake snake;
 	Planet planets;
+	Robot robot;
 
 
 	int shootCooldown = 30;

@@ -23,7 +23,7 @@ add_executable(FinalProject
 	"src/light.cpp" 
 	"src/snake.cpp"
 	"src/planet.cpp"
-)
+ "src/robot.cpp")
 
 target_compile_features(FinalProject PRIVATE cxx_std_20)
 target_link_libraries(FinalProject PRIVATE CGFramework)
