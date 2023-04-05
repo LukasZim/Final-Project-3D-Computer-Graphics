@@ -86,7 +86,9 @@ class Application {
 		spotLight(glm::vec3(50.0f, 50.0f, 2.0f), glm::vec3(-1, -1, 0), glm::vec3(1.0)),
 		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/pure_blue.png", "resources/Bullet_Enemy/pure_red.png"),
 		//ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 30, 0))),
-		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0)))
+		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0))),
+		ground2("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(500, 20, 0))),
+		ground3("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(-500, 20, 0)))
 		{
 
 		m_window.registerKeyCallback(
@@ -244,6 +246,7 @@ class Application {
 				//glDisable(GL_CULL_FACE);
 				player.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				ground.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				ground2.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				bullethandler.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				enemy1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				enemy2.shadowDraw(m_projectionMatrix, shadowViewMatrix);
@@ -305,6 +308,7 @@ class Application {
 			std::vector<glm::vec3> enemyLocations = { enemy1.getLocation(), enemy2.getLocation(), enemy3.getLocation()};
 			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix, score, damageTaken, enemyLocations);
 			ground.draw(m_projectionMatrix, m_viewMatrix);
+			ground2.draw(m_projectionMatrix, m_viewMatrix);
 			enemy1.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
 			enemy2.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
 			enemy3.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
@@ -428,6 +432,14 @@ class Application {
 	Enemy enemy3;
 	BulletHandler bullethandler;
 	Environment ground;
+	Environment ground2;
+	Environment ground3;
+	Environment ground4;
+	Environment ground5;
+	Environment ground6;
+	Environment ground7;
+	Environment ground8;
+	Environment ground9;
 	Light spotLight;
 	Light secondaryLight;
 	Snake snake;
