@@ -63,7 +63,7 @@ class Application {
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/znwEF.png"),
 		//ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 30, 0))),
-		ground("resources/cube-textured.obj", "resources/default.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 2000.0 , 10 , 2000.0 }), glm::vec3(0,-2,0)))
+		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0)))
 		{
 
 		m_window.registerKeyCallback(
@@ -398,7 +398,7 @@ class Application {
 	// Light properties
 	
 
-	glm::vec3 m_lightPosition = glm::vec3(20.0f, 20.0f, 2.0f);
+	glm::vec3 m_lightPosition = glm::vec3(50.0f, 50.0f, 2.0f);
 	glm::vec3 m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	// Material properties
