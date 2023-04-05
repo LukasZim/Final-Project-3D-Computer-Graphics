@@ -59,7 +59,7 @@ class Player {
 				m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(8.0, 2.0, 8.0));
 			}
 			empowered = true;
-			duration = 5000;
+			duration = 3000;
 		}
 
 		bool isEmpowered() {
