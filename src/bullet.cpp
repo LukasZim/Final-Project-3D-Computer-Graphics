@@ -30,7 +30,7 @@ class Bullet {
 		}
 
 		bool outOfRange(glm::vec3 location) {
-			if (glm::length(getLocation() - location) > 300) {
+			if (glm::length(getLocation() - location) > 1000) {
 				return true;
 			}
 			return false;

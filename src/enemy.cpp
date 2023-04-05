@@ -107,6 +107,10 @@ class Enemy {
 				bullethandler.createBullet(glm::inverse(glm::lookAt(getLocation(), playerPos, glm::vec3(0, 1, 0))), false);
 				shootTimer = 30;
 			}
+			else if (shootTimer <= 0 && glm::length(playerPos - getLocation()) < 300) {
+				bullethandler.createBullet(glm::inverse(glm::lookAt(getLocation(), playerPos, glm::vec3(0, 1, 0))), false);
+				shootTimer = 30;
+			}
 		}
 	private:
 		GPUMesh m_mesh;

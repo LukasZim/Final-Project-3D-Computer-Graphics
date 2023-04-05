@@ -5,6 +5,9 @@
 #include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "enemy.cpp"
+
+
 
 class Robot {
 public:
@@ -47,6 +50,28 @@ public:
 		}
 		glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
 		drawMesh(framecounter);
+	}
+
+	glm::vec3 getLocation() {
+		return m_modelMatrix * glm::vec4(0, 0, 0, 1);
+	}
+
+	void update(glm::vec3 playerPos, BulletHandler& bullethandler) {
+		shootAt(playerPos, bullethandler);
+		m_modelMatrix = glm::rotate(glm::inverse(glm::lookAt(getLocation(), playerPos, glm::vec3(0, 1, 0))), glm::radians(180.0f), glm::vec3(0,1,0));
+		m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(20.0f));
+		m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0, 0, .01));
+		shoottimer--;
+	}
+
+	void shootAt(glm::vec3 playerPos, BulletHandler& bullethandler) {
+		if (shoottimer <= 0) {
+			bullethandler.createBullet(glm::inverse(glm::lookAt(getLocation() + +glm::vec3(0, 0, 0), playerPos, glm::vec3(0, 1, 0))), false);
+			bullethandler.createBullet(glm::inverse(glm::lookAt(getLocation() + glm::vec3(0, 60, 0), playerPos, glm::vec3(0, 1, 0))), false);
+			bullethandler.createBullet(glm::inverse(glm::lookAt(getLocation() + glm::vec3(-15, 0, 0), playerPos, glm::vec3(0, 1, 0))), false);
+			bullethandler.createBullet(glm::inverse(glm::lookAt(getLocation() + glm::vec3(15, 0, 0), playerPos, glm::vec3(0, 1, 0))), false);
+			shoottimer = 15;
+		}
 	}
 
 	void drawMesh(int framecounter) {
@@ -108,4 +133,5 @@ private:
 	glm::mat4 lightMVP;
 
 	int framesPerMesh = 5;
+	int shoottimer = 15;
 };

@@ -25,7 +25,7 @@ DISABLE_WARNINGS_POP()
 #include "powerup.cpp"
 #include "player.cpp"
 #include <glm/gtx/string_cast.hpp>
-#include "enemy.cpp"
+//#include "enemy.cpp"
 #include "environment.cpp"
 #include "snake.cpp"
 #include "planet.cpp"
@@ -95,7 +95,11 @@ class Application {
 		ground7("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(-500, 20, -500))),
 		ground8("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(500, 20, -500))),
 		ground9("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(500, 20, 500))),
-		red_glass1("resources/cube_transparent/cube_transparent.obj", "resources/cube_transparent/red.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{50.0}), glm::vec3(5, 0, 0))) {
+		red_glass1("resources/cube_transparent/cube_transparent.obj", "resources/cube_transparent/red.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 50.0 }), glm::vec3(5, 0, 0))), 
+		red_glass2("resources/cube_transparent/cube_transparent.obj", "resources/cube_transparent/red.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 50.0 }), glm::vec3(-5, 0, 0))) ,
+		red_glass3("resources/cube_transparent/cube_transparent.obj", "resources/cube_transparent/red.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 50.0 }), glm::vec3(0, 0, 5))),
+		red_glass5("resources/cube_transparent/cube_transparent.obj", "resources/cube_transparent/red.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 50.0 }), glm::vec3(0, 0, 0))) ,
+		red_glass4("resources/cube_transparent/cube_transparent.obj", "resources/cube_transparent/red.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{50.0}), glm::vec3(0, 0, -5))) {
 
 		m_window.registerKeyCallback(
 			[this](int key, int scancode, int action, int mods) {
@@ -169,7 +173,7 @@ class Application {
 			// This is your game loop
 			// Put your real-time logic and rendering in here
 			m_window.updateInput();
-			
+			robot.update(player.getLocation(), bullethandler);
 
 			// Use ImGui for easy input/output of ints, floats, strings, etc...
 			ImGui::Begin("Window");
@@ -322,7 +326,7 @@ class Application {
 			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 
 			//m_defaultShader.bind();
-			std::vector<glm::vec3> enemyLocations = { enemy1.getLocation(), enemy2.getLocation(), enemy3.getLocation()};
+			std::vector<glm::vec3> enemyLocations = { enemy1.getLocation(), enemy2.getLocation(), enemy3.getLocation(), robot.getLocation()};
 			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix, score, damageTaken, enemyLocations);
 			ground.draw(m_projectionMatrix, m_viewMatrix);
 			ground2.draw(m_projectionMatrix, m_viewMatrix);
@@ -340,7 +344,29 @@ class Application {
 			snake.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 			planets.draw(m_projectionMatrix, m_viewMatrix);
 			robot.draw(m_projectionMatrix, m_viewMatrix, framecounter);
-			red_glass1.draw(m_projectionMatrix, m_viewMatrix);
+			std::vector<Environment*> transparent = {};
+			struct less_than_key {
+				Player &player;
+				inline bool operator() (Environment* trans1, Environment* trans2) {
+					return glm::length(trans1->getLocation() - player.getLocation()) > glm::length(trans2->getLocation() - player.getLocation());
+				}
+			};
+			transparent.push_back(&red_glass1);
+			transparent.push_back(&red_glass2);
+			transparent.push_back(&red_glass3);
+			transparent.push_back(&red_glass4);
+			transparent.push_back(&red_glass5);
+
+			std::sort(transparent.begin(), transparent.end(), less_than_key(player));
+
+			for (auto it = begin(transparent); it != end(transparent); ++it) {
+				(*it)->draw(m_projectionMatrix, m_viewMatrix);
+			}
+
+			//red_glass1.draw(m_projectionMatrix, m_viewMatrix);
+			//red_glass2.draw(m_projectionMatrix, m_viewMatrix);
+			//red_glass3.draw(m_projectionMatrix, m_viewMatrix);
+			//red_glass4.draw(m_projectionMatrix, m_viewMatrix);
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
@@ -471,6 +497,10 @@ class Application {
 	Planet planets;
 	Robot robot;
 	Environment red_glass1;
+	Environment red_glass2;
+	Environment red_glass3;
+	Environment red_glass4;
+	Environment red_glass5;
 
 
 	int shootCooldown = 30;
