@@ -53,7 +53,7 @@ class Application {
 
 	Application()
 		: 
-		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
+		m_window("Final Project", glm::ivec2(1920, 1080), OpenGLVersion::GL45),
 		powerup1("resources/cube-textured.obj", "resources/default.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3(10.0f, 10.0f, 10.0f)), glm::vec3(5, 0, 5))),
 		enemy1("resources/enemyship/UFO.obj",
 			"resources/enemyship/reinforced-metal_metallic.png", 
@@ -150,8 +150,8 @@ class Application {
 	void update() {
 
 		GLuint texShadow;
-		const int SHADOWTEX_WIDTH = 1024;
-		const int SHADOWTEX_HEIGHT = 1024;
+		const int SHADOWTEX_WIDTH = 1920;
+		const int SHADOWTEX_HEIGHT = 1080;
 		glCreateTextures(GL_TEXTURE_2D, 1, &texShadow);
 		glTextureStorage2D(texShadow, 1, GL_DEPTH_COMPONENT32F, SHADOWTEX_WIDTH, SHADOWTEX_HEIGHT);
 
@@ -510,7 +510,7 @@ class Application {
 	int shootCooldown = 30;
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
-		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
+		glm::perspective(glm::radians(90.0f), 16.0f/9.0f, 0.1f, 1000.0f);
 	glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	int damageTaken = 0;
