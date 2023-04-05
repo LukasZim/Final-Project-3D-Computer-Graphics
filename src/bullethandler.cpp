@@ -16,7 +16,7 @@ public:
  		bullets.push_back(newBullet);
 	}
 
-	void draw(glm::vec3 playerpos, glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix) {
+	void draw(glm::vec3 playerpos, glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, int& score, int& damageTaken, std::vector<glm::vec3> enemies ) {
 		std::list<Bullet>::iterator i = bullets.begin();
 		while (i != bullets.end()) {
 			bool outOfRange = (*i).outOfRange(playerpos);
@@ -24,6 +24,15 @@ public:
 				bullets.erase(i++);
 			}
 			else {
+				if ((*i).intersects(playerpos, true)) {
+					damageTaken = damageTaken + 1;
+				}
+				for (int e = 0; e < enemies.size(); e++) {
+
+					if ((*i).intersects(enemies[e], false)) {
+						score = score + 100;
+					}
+				}
 				(*i).draw(m_projectionMatrix, m_viewMatrix, &m_mesh, (*i).friendly?  & m_texture : &m_texture_enemy);
 				++i;
 			}

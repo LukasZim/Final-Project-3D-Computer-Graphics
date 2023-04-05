@@ -22,6 +22,7 @@ class Bullet {
 			m_modelMatrix(startMatrix)
 		{
 			this->friendly = friendly;
+			this->hasIntersected = false;
 		}
 
 		glm::vec3 getLocation() {
@@ -29,7 +30,7 @@ class Bullet {
 		}
 
 		bool outOfRange(glm::vec3 location) {
-			if (glm::length(getLocation() - location) > 2000) {
+			if (glm::length(getLocation() - location) > 300) {
 				return true;
 			}
 			return false;
@@ -37,13 +38,10 @@ class Bullet {
 
 		void draw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, GPUMesh *m_mesh, Texture *m_texture) {
 			m_modelMatrix = glm::translate(m_modelMatrix, glm::vec3(0.0f, 0.0f, -0.3f));
-			//std::cout << glm::to_string(getLocation()) << "\n";
-			std::cout << speed << "\n";
 			const glm::mat4 mvpMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 			const glm::mat3 normalModelMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
 
 			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
-			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 			if ((*m_mesh).hasTextureCoords()) {
 				(*m_texture).bind(GL_TEXTURE1);
@@ -64,10 +62,22 @@ class Bullet {
 			(*m_mesh).draw();
 		}
 
+		bool intersects(glm::vec3 pos, bool friendlyPerson){
+			if (glm::length(getLocation() - pos) < 25 && !friendlyPerson && friendly && !hasIntersected) {
+				this->hasIntersected = true;
+				return true;
+			}
+			if (glm::length(getLocation() - pos) < 15 && friendlyPerson && !friendly && !hasIntersected) {
+				this->hasIntersected = true;
+				return true;
+			}
+			return false;
+		}
 
 	private:
 		glm::mat4 m_modelMatrix;
 		glm::mat4 lightMVP;
+		bool hasIntersected;
 
 		int speed;
 		int damage;

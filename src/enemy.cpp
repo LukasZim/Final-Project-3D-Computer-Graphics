@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <numeric>
 #include "bullethandler.cpp"
+#include "light.cpp"
 
 
 class Enemy {
@@ -51,7 +52,7 @@ class Enemy {
 		}
 
 
-		void draw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix) {
+		void draw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, glm::vec3 playerPos, BulletHandler& bullethandler, Light spotLight) {
 			//m_modelMatrix = glm::translate(glm::rotate(m_modelMatrix, glm::radians((float)1.0f), glm::vec3(0, 1, 0)), glm::vec3(0, 0, 0));
 			m_modelMatrix = glm::translate(glm::mat4{1.0}, glm::vec3(bezier_curve.at(steps / slowDown).first, 0.0f, bezier_curve.at(steps / slowDown).second));
 
@@ -59,7 +60,6 @@ class Enemy {
 			const glm::mat3 normalModelMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
 
 			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
-			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 			if (m_mesh.hasTextureCoords()) {
 				m_texture.bind(GL_TEXTURE1);
@@ -73,6 +73,8 @@ class Enemy {
 			glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
 			m_mesh.draw();
 			steps = (steps + 1) % (bezierSteps * slowDown);
+			shootAt(playerPos, bullethandler, spotLight);
+			shootTimer--;
 		}
 
 		void shadowDraw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix) {
@@ -85,8 +87,11 @@ class Enemy {
 			return m_modelMatrix * glm::vec4(0, 0, 0, 1);
 		}
 
-		void shootAt(glm::vec3 position, BulletHandler& bullethandler) {
-			bullethandler.createBullet(glm::inverse(glm::lookAt(getLocation(), position, glm::vec3(0, 1, 0))), false);
+		void shootAt(glm::vec3 playerPos, BulletHandler& bullethandler, Light spotLight) {
+			if (shootTimer <= 0 && glm::dot(glm::normalize(spotLight.direction), glm::normalize(playerPos - spotLight.position)) > 0.7) {
+				bullethandler.createBullet(glm::inverse(glm::lookAt(getLocation(), playerPos, glm::vec3(0, 1, 0))), false);
+				shootTimer = 30;
+			}
 		}
 	private:
 		GPUMesh m_mesh;
@@ -96,6 +101,7 @@ class Enemy {
 		int steps;
 		int bezierSteps;
 		int slowDown = 1;
+		int shootTimer = 30;
 
 		//Bezier Curve
 		std::vector<std::pair<float, float>> bezier_curve; //x, y

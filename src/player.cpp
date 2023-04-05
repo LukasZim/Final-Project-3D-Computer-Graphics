@@ -103,7 +103,6 @@ class Player {
 
 				// give matrices to the shader
 				glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
-				glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
 				glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrix));
 
 			}

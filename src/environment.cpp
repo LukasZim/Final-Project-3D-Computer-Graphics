@@ -29,7 +29,6 @@ public:
 		const glm::mat4 mvpMatrixEnvironment = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 		const glm::mat3 normalModelMatrixEnvironment = glm::inverseTranspose(glm::mat3(m_modelMatrix));
 		glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrixEnvironment));
-		glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrix));
 		glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrixEnvironment));
 		if (m_mesh.hasTextureCoords()) {
 			m_texture.bind(GL_TEXTURE1);

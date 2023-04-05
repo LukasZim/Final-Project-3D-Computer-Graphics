@@ -27,7 +27,6 @@ DISABLE_WARNINGS_POP()
 #include <glm/gtx/string_cast.hpp>
 #include "enemy.cpp"
 #include "environment.cpp"
-#include "light.cpp"
 
 class Application {
   public:
@@ -62,6 +61,7 @@ class Application {
 		),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		secondaryLight(glm::vec3(0, 10, 0), glm::vec3(-1, -1, 0), glm::vec3(.2, .2, .2)),
+		spotLight(glm::vec3(50.0f, 50.0f, 2.0f), glm::vec3(-1, -1, 0), glm::vec3(1.0)),
 		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/pure_blue.png", "resources/Bullet_Enemy/pure_red.png"),
 		//ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 30, 0))),
 		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0)))
@@ -143,12 +143,13 @@ class Application {
 
 			// Use ImGui for easy input/output of ints, floats, strings, etc...
 			ImGui::Begin("Window");
-			ImGui::InputInt(
-				"This is an integer input",
-				&dummyInteger);	 // Use ImGui::DragInt or ImGui::DragFloat for
+			//ImGui::InputInt(
+				//"This is an integer input",
+				//&dummyInteger);	 // Use ImGui::DragInt or ImGui::DragFloat for
 			// larger range of numbers.
-			ImGui::Text("Value is: %i",
-				dummyInteger);	// Use C printf formatting rules (%i is
+			ImGui::Text("Score is: %i",
+				score);	// Use C printf formatting rules (%i is
+			ImGui::Text("Damage taken is %i", damageTaken);
 			// a signed integer)
 			ImGui::Checkbox("Top View", &topviewEnabled);
 			ImGui::End();
@@ -179,20 +180,22 @@ class Application {
 			//shooting
 			if (shooting && shootCooldown <= 0) {
 				bullethandler.createBullet(player.getModelMatrix(), true);
-				enemy1.shootAt(player.getLocation(), bullethandler);
 				shootCooldown = 30;
 			}
 			shootCooldown--;
-			glm::mat4 shadowViewMatrix = glm::lookAt(m_lightPosition, m_lightPosition + glm::vec3(-1, -1, 0), glm::vec3(0, 1, 0));
+			std::cout << glm::dot(glm::normalize(spotLight.direction), glm::normalize(player.getLocation() - spotLight.position)) << "\n";
+			//enemy1.shootAt(player.getLocation(), bullethandler);
+
+			glm::mat4 shadowViewMatrix = glm::lookAt(spotLight.position, spotLight.position + spotLight.direction, glm::vec3(0, 1, 0));
 
 			// toggle camera
 			if (!topviewEnabled) {
 				m_viewMatrix = glm::lookAt(glm::vec3(player.getModelMatrix() * glm::vec4(0, 3, 6, 1)), glm::vec3(player.getModelMatrix() * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 			}
 			else {
-				//m_viewMatrix = glm::lookAt(glm::vec3(player.getModelMatrix() * glm::vec4(0, 60, 6, 1)), glm::vec3(player.getModelMatrix() * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
+				m_viewMatrix = glm::lookAt(glm::vec3(player.getModelMatrix() * glm::vec4(0, 60, 6, 1)), glm::vec3(player.getModelMatrix() * glm::vec4(0, 0, 0, 1)), glm::vec3(0, 1, 0));
 				//m_viewMatrix = glm::lookAt(m_lightPosition, glm::vec3(0.0), glm::vec3(0, 1, 0));
-				m_viewMatrix = shadowViewMatrix;
+				//m_viewMatrix = shadowViewMatrix;
 			}
 
 
@@ -251,8 +254,8 @@ class Application {
 
 			//Newly Added 3.27.2023
 			// Set light properties
-			glUniform3fv(5, 1, glm::value_ptr(m_lightPosition));
-			glUniform3fv(6, 1, glm::value_ptr(m_lightColor));
+			glUniform3fv(5, 1, glm::value_ptr(spotLight.position));
+			glUniform3fv(6, 1, glm::value_ptr(spotLight.color));
 
 			// Set material properties
 			glUniform3fv(8, 1, glm::value_ptr(m_materialAmbient));
@@ -271,10 +274,10 @@ class Application {
 			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 
 			//m_defaultShader.bind();
-
-			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix);
+			std::vector<glm::vec3> enemyLocations = { enemy1.getLocation() };
+			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix, score, damageTaken, enemyLocations);
 			ground.draw(m_projectionMatrix, m_viewMatrix);
-			enemy1.draw(m_projectionMatrix, m_viewMatrix);
+			enemy1.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
 			powerup1.draw(m_projectionMatrix, m_viewMatrix);
 
 			// Processes input and swaps the window buffer
@@ -390,6 +393,7 @@ class Application {
 	Enemy enemy1;
 	BulletHandler bullethandler;
 	Environment ground;
+	Light spotLight;
 	Light secondaryLight;
 
 
@@ -399,13 +403,13 @@ class Application {
 		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
 	glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 
-
+	int damageTaken = 0;
+	int score = 0;
 
 	// Light properties
 	
 
-	glm::vec3 m_lightPosition = glm::vec3(50.0f, 50.0f, 2.0f);
-	glm::vec3 m_lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
 
 	// Material properties
 	glm::vec3 m_materialAmbient = glm::vec3(0.1f, 0.1f, 0.1f);

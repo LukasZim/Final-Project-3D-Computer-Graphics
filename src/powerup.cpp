@@ -58,7 +58,6 @@ class Powerup {
 			const glm::mat3 normalModelMatrixPowerup = glm::inverseTranspose(glm::mat3(m_modelMatrixPowerup));
 
 			glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrixPowerup));
-			glUniformMatrix4fv(1, 1, GL_FALSE, glm::value_ptr(m_modelMatrixPowerup));
 			glUniformMatrix3fv(2, 1, GL_FALSE, glm::value_ptr(normalModelMatrixPowerup));
 			if (m_mesh_powerup.hasTextureCoords()) {
 				m_texture_powerup.bind(GL_TEXTURE1);
