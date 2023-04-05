@@ -88,8 +88,9 @@ class Application {
 		//ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 30, 0))),
 		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0))),
 		ground2("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(500, 20, 0))),
-		ground3("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(-500, 20, 0)))
-		{
+		ground3("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(-500, 20, 0))),
+		
+		red_glass1("resources/cube_transparent/cube_transparent.obj", "resources/cube_transparent/red.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{50.0}), glm::vec3(5, 0, 0))) {
 
 		m_window.registerKeyCallback(
 			[this](int key, int scancode, int action, int mods) {
@@ -244,6 +245,8 @@ class Application {
 				// .... HERE YOU MUST ADD THE CORRECT UNIFORMS FOR RENDERING THE SHADOW MAP
 
 				//glDisable(GL_CULL_FACE);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				player.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				ground.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				ground2.shadowDraw(m_projectionMatrix, shadowViewMatrix);
@@ -254,11 +257,13 @@ class Application {
 				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				snake.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				robot.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
+				red_glass1.draw(m_projectionMatrix, shadowViewMatrix);
 				// Execute draw command
 				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
 				//glEnable(GL_CULL_FACE);
 				// Unbind the off-screen framebuffer
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				//glDisable(GL_BLEND);
 
 			}
 
@@ -316,6 +321,7 @@ class Application {
 			snake.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 			planets.draw(m_projectionMatrix, m_viewMatrix);
 			robot.draw(m_projectionMatrix, m_viewMatrix, framecounter);
+			red_glass1.draw(m_projectionMatrix, m_viewMatrix);
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
@@ -445,6 +451,7 @@ class Application {
 	Snake snake;
 	Planet planets;
 	Robot robot;
+	Environment red_glass1;
 
 
 	int shootCooldown = 30;

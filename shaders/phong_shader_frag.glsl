@@ -94,6 +94,7 @@ void main()
     }
     vec3 finalColor = phong(lightPosition, lightColor);
     vec3 finalColor2 = phong(lightPosition2, lightColor2);
-    fragColor = vec4((finalColor* CalcShadowFactorPCF() + finalColor2)* texColor.rgb , 1.0);
+    fragColor = vec4((finalColor* CalcShadowFactorPCF() + finalColor2), 1.0) * texColor;
+    
 
 }

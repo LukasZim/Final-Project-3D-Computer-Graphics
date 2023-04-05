@@ -3,6 +3,7 @@
 #include <framework/disable_all_warnings.h>
 DISABLE_WARNINGS_PUSH()
 #include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
 #include <glm/vec3.hpp>
 DISABLE_WARNINGS_POP()
 #include <filesystem>
@@ -12,9 +13,9 @@ struct Image {
 public:
     Image(const std::filesystem::path& filePath);
 
-    glm::vec3 getTexel(const glm::vec2& textureCoordinates) const;
+    glm::vec4 getTexel(const glm::vec2& textureCoordinates) const;
 
 public:
     int width, height;
-    std::vector<glm::vec3> pixels;
+    std::vector<glm::vec4> pixels;
 };
