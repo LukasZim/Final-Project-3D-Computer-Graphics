@@ -52,8 +52,9 @@ class Application {
 
 
 	Application()
-		: 
-		m_window("Final Project", glm::ivec2(1024, 1024), OpenGLVersion::GL45),
+		: 		
+
+		m_window("Final Project", glm::ivec2(1920, 1080), OpenGLVersion::GL45),
 		powerup1("resources/powerup/cube.obj", "resources/powerup/gold.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3(10.0f, 10.0f, 10.0f)), glm::vec3(5, 0, 5))),
 		enemy1("resources/enemyship/UFO.obj",
 			"resources/enemyship/reinforced-metal_metallic.png", 
@@ -85,6 +86,7 @@ class Application {
 		secondaryLight(glm::vec3(0, 10, 0), glm::vec3(-1, -1, 0), glm::vec3(.2, .2, .2)),
 		spotLight(glm::vec3(50.0f, 50.0f, 2.0f), glm::vec3(-1, -1, 0), glm::vec3(1.0)),
 		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/pure_blue.png", "resources/Bullet_Enemy/pure_red.png"),
+		lakeHouse("resources/lakehouse/building.obj", "resources/lakehouse/concrete_rock_path_diff_1k.jpg", glm::translate(glm::mat4{1.0}, glm::vec3(0,-20,300))),
 		//ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 30, 0))),
 		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0))),
 		ground2("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(500, 20, 0))),
@@ -149,8 +151,8 @@ class Application {
 	void update() {
 
 		GLuint texShadow;
-		const int SHADOWTEX_WIDTH = 1024;
-		const int SHADOWTEX_HEIGHT = 1024;
+		const int SHADOWTEX_WIDTH = 1920;
+		const int SHADOWTEX_HEIGHT = 1080;
 		glCreateTextures(GL_TEXTURE_2D, 1, &texShadow);
 		glTextureStorage2D(texShadow, 1, GL_DEPTH_COMPONENT32F, SHADOWTEX_WIDTH, SHADOWTEX_HEIGHT);
 
@@ -273,7 +275,7 @@ class Application {
 				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				snake.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				robot.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
-				red_glass1.draw(m_projectionMatrix, shadowViewMatrix);
+				//red_glass1.draw(m_projectionMatrix, shadowViewMatrix);
 				// Execute draw command
 				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
 				//glEnable(GL_CULL_FACE);
@@ -344,6 +346,7 @@ class Application {
 			snake.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 			planets.draw(m_projectionMatrix, m_viewMatrix);
 			robot.draw(m_projectionMatrix, m_viewMatrix, framecounter);
+			lakeHouse.draw(m_projectionMatrix, m_viewMatrix);
 			std::vector<Environment*> transparent = {};
 			struct less_than_key {
 				Player &player;
@@ -502,11 +505,13 @@ class Application {
 	Environment red_glass4;
 	Environment red_glass5;
 
+	Environment lakeHouse;
+
 
 	int shootCooldown = 30;
 	// Projection and view matrices for you to fill in and use
 	glm::mat4 m_projectionMatrix =
-		glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 1000.0f);
+		glm::perspective(glm::radians(90.0f), 16.0f/9.0f, 0.1f, 1000.0f);
 	glm::mat4 m_viewMatrix = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	int damageTaken = 0;
