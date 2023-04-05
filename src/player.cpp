@@ -95,7 +95,7 @@ class Player {
 
 				if (duration <= 0) {
 					empowered = false;
-					m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3{ 0.125 , .5, .125});
+					m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3{ .125 , .5, .125});
 				}
 				duration--;
 			}
