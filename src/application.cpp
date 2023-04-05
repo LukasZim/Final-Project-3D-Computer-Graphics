@@ -85,6 +85,7 @@ class Application {
 		secondaryLight(glm::vec3(0, 10, 0), glm::vec3(-1, -1, 0), glm::vec3(.2, .2, .2)),
 		spotLight(glm::vec3(50.0f, 50.0f, 2.0f), glm::vec3(-1, -1, 0), glm::vec3(1.0)),
 		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/pure_blue.png", "resources/Bullet_Enemy/pure_red.png"),
+		lakeHouse("resources/lakehouse/building.obj", "resources/lakehouse/concrete_rock_path_diff_1k.jpg", glm::translate(glm::mat4{1.0}, glm::vec3(0,-20,300))),
 		//ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 30, 0))),
 		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0))),
 		ground2("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(500, 20, 0))),
@@ -273,7 +274,7 @@ class Application {
 				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				snake.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				robot.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
-				red_glass1.draw(m_projectionMatrix, shadowViewMatrix);
+				//red_glass1.draw(m_projectionMatrix, shadowViewMatrix);
 				// Execute draw command
 				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
 				//glEnable(GL_CULL_FACE);
@@ -344,6 +345,7 @@ class Application {
 			snake.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 			planets.draw(m_projectionMatrix, m_viewMatrix);
 			robot.draw(m_projectionMatrix, m_viewMatrix, framecounter);
+			lakeHouse.draw(m_projectionMatrix, m_viewMatrix);
 			std::vector<Environment*> transparent = {};
 			struct less_than_key {
 				Player &player;
@@ -501,6 +503,8 @@ class Application {
 	Environment red_glass3;
 	Environment red_glass4;
 	Environment red_glass5;
+
+	Environment lakeHouse;
 
 
 	int shootCooldown = 30;

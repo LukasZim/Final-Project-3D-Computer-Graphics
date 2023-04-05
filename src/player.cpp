@@ -56,10 +56,10 @@ class Player {
 
 		void empower() {
 			if (!empowered) {
-				m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3{ 4.0 });
+				m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3(8.0, 2.0, 8.0));
 			}
 			empowered = true;
-			duration = 500;
+			duration = 5000;
 		}
 
 		bool isEmpowered() {
@@ -95,7 +95,7 @@ class Player {
 
 				if (duration <= 0) {
 					empowered = false;
-					m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3{ 0.25 });
+					m_modelMatrix = glm::scale(m_modelMatrix, glm::vec3{ 0.125 , .5, .125});
 				}
 				duration--;
 			}
