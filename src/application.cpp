@@ -89,7 +89,12 @@ class Application {
 		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0))),
 		ground2("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(500, 20, 0))),
 		ground3("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(-500, 20, 0))),
-		
+		ground4("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0, 20, 500))),
+		ground5("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0, 20, -500))),
+		ground6("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(-500, 20, 500))),
+		ground7("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(-500, 20, -500))),
+		ground8("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(500, 20, -500))),
+		ground9("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(500, 20, 500))),
 		red_glass1("resources/cube_transparent/cube_transparent.obj", "resources/cube_transparent/red.png", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{50.0}), glm::vec3(5, 0, 0))) {
 
 		m_window.registerKeyCallback(
@@ -250,6 +255,13 @@ class Application {
 				player.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				ground.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				ground2.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				ground3.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				ground4.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				ground5.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				ground6.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				ground7.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				ground8.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				ground9.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				bullethandler.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				enemy1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				enemy2.shadowDraw(m_projectionMatrix, shadowViewMatrix);
@@ -314,6 +326,13 @@ class Application {
 			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix, score, damageTaken, enemyLocations);
 			ground.draw(m_projectionMatrix, m_viewMatrix);
 			ground2.draw(m_projectionMatrix, m_viewMatrix);
+			ground3.draw(m_projectionMatrix, m_viewMatrix);
+			ground4.draw(m_projectionMatrix, m_viewMatrix);
+			ground5.draw(m_projectionMatrix, m_viewMatrix);
+			ground6.draw(m_projectionMatrix, m_viewMatrix);
+			ground7.draw(m_projectionMatrix, m_viewMatrix);
+			ground8.draw(m_projectionMatrix, m_viewMatrix);
+			ground9.draw(m_projectionMatrix, m_viewMatrix);
 			enemy1.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
 			enemy2.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
 			enemy3.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
