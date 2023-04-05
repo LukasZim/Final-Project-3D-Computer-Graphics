@@ -19,7 +19,8 @@ add_executable(FinalProject
 	"src/enemy.cpp"
 	"src/bullet.cpp"	
 	"src/bullethandler.cpp"
-	"src/environment.cpp")
+	"src/environment.cpp"
+	"src/light.cpp")
 
 target_compile_features(FinalProject PRIVATE cxx_std_20)
 target_link_libraries(FinalProject PRIVATE CGFramework)

@@ -28,6 +28,7 @@ DISABLE_WARNINGS_POP()
 #include "enemy.cpp"
 #include "bullethandler.cpp"
 #include "environment.cpp"
+#include "light.cpp"
 
 class Application {
   public:
@@ -61,7 +62,8 @@ class Application {
 			{ 130.0f, 230.0f, 330.0f, 430.0f }
 		),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
-		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/znwEF.png"),
+		secondaryLight(glm::vec3(0, 10, 0), glm::vec3(-1, -1, 0), glm::vec3(.2, .2, .2)),
+		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/pure_blue.png"),
 		//ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 30, 0))),
 		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0)))
 		{
@@ -257,6 +259,9 @@ class Application {
 			glUniform3fv(9, 1, glm::value_ptr(m_materialDiffuse));
 			glUniform3fv(10, 1, glm::value_ptr(m_materialSpecular));
 			glUniform1f(11, materialShininess);
+
+			glUniform3fv(15, 1, glm::value_ptr(secondaryLight.position));
+			glUniform3fv(16, 1, glm::value_ptr(secondaryLight.color));
 			
 			bool collected = powerup1.tryCollect(player.getLocation());
 
@@ -385,6 +390,7 @@ class Application {
 	Enemy enemy1;
 	BulletHandler bullethandler;
 	Environment ground;
+	Light secondaryLight;
 
 
 	int shootCooldown = 30;

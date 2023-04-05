@@ -17,6 +17,10 @@ layout(location = 12) in vec4 texColor;
 layout(location = 13) uniform sampler2D texShadow;
 layout(location = 14) uniform mat4 lightMVP;
 
+
+layout(location = 15) uniform vec3 lightPosition2;
+layout(location = 16) uniform vec3 lightColor2;
+
 in vec3 fragPosition;
 in vec3 fragNormal;
 in vec2 fragTexCoord;
@@ -56,33 +60,40 @@ float CalcShadowFactorPCF(){
     return ShadowSum / 9.0 * max(0.0, 2 * (0.5 - length(vec2(0.5, 0.5) - fragLightCoord.xy)));
 }
 
-
-void main()
-{
+vec3 phong(vec3 lightPos, vec3 lightCol){
     vec3 ambient, diffuse, specular;
     const vec3 Normalized = normalize(fragNormal);
-    vec3 new_pos = normalize(lightPosition - fragPosition);
+    vec3 new_pos = normalize(lightPos - fragPosition);
     
     // Ambient component
-    ambient = materialAmbient * lightColor;
+    ambient = materialAmbient * lightCol;
     
     // Diffuse component
     float diffuse_intensity = max(dot(Normalized, new_pos), 0.0);
-    diffuse = materialDiffuse * diffuse_intensity * lightColor;
+    diffuse = materialDiffuse * diffuse_intensity * lightCol;
     
     // Specular component
     vec3 specular_reflection = reflect(-new_pos, Normalized);
     vec3 specular_new_pos = normalize(viewPosition - fragPosition);
     float specular_intensity = pow(max(dot(specular_reflection, specular_new_pos), 1.0), m_materialShininess);
-    specular = materialSpecular * specular_intensity * lightColor;
+    specular = materialSpecular * specular_intensity * lightCol;
     
     vec3 finalColor = ambient + diffuse + specular;
+    return finalColor;
+}
+
+
+void main()
+{
+
     vec4 texColor = vec4(1.0);
     if (hasTexCoords) {
         texColor = texture(colorMap, fragTexCoord);
     } else {
         texColor = vec4(1.0);
     }
-    fragColor = vec4(finalColor * texColor.rgb, 1.0) * CalcShadowFactorPCF();
+    vec3 finalColor = phong(lightPosition, lightColor);
+    vec3 finalColor2 = phong(lightPosition2, lightColor2);
+    fragColor = vec4((finalColor* CalcShadowFactorPCF() + finalColor2)* texColor.rgb , 1.0);
 
 }
