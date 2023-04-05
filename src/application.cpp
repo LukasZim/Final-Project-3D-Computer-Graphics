@@ -27,6 +27,7 @@ DISABLE_WARNINGS_POP()
 #include <glm/gtx/string_cast.hpp>
 #include "enemy.cpp"
 #include "environment.cpp"
+#include "snake.cpp"
 
 class Application {
   public:
@@ -59,6 +60,7 @@ class Application {
 			{ 8.0f, 74.0f, 81.0f, 11.0f } ,
 			{ 130.0f, 230.0f, 330.0f, 430.0f }
 		),
+		snake("resources/snake/snake1.obj", "resources/snake/snake2.obj", "resources/snake/snake3.obj", "resources/snake/pure_blue.png", glm::scale(glm::mat4{ 1.0 }, glm::vec3{50.0f})),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		secondaryLight(glm::vec3(0, 10, 0), glm::vec3(-1, -1, 0), glm::vec3(.2, .2, .2)),
 		spotLight(glm::vec3(50.0f, 50.0f, 2.0f), glm::vec3(-1, -1, 0), glm::vec3(1.0)),
@@ -222,6 +224,7 @@ class Application {
 				bullethandler.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				enemy1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				snake.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 
 				// Execute draw command
 				//glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.triangles.size() * 3), GL_UNSIGNED_INT, nullptr);
@@ -279,6 +282,7 @@ class Application {
 			ground.draw(m_projectionMatrix, m_viewMatrix);
 			enemy1.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
 			powerup1.draw(m_projectionMatrix, m_viewMatrix);
+			snake.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
@@ -395,6 +399,7 @@ class Application {
 	Environment ground;
 	Light spotLight;
 	Light secondaryLight;
+	Snake snake;
 
 
 	int shootCooldown = 30;
