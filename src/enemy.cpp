@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <numeric>
+#include "bullethandler.cpp"
 
 
 class Enemy {
@@ -82,6 +83,10 @@ class Enemy {
 
 		glm::vec3 getLocation() {
 			return m_modelMatrix * glm::vec4(0, 0, 0, 1);
+		}
+
+		void shootAt(glm::vec3 position, BulletHandler& bullethandler) {
+			bullethandler.createBullet(glm::inverse(glm::lookAt(getLocation(), position, glm::vec3(0, 1, 0))), false);
 		}
 	private:
 		GPUMesh m_mesh;

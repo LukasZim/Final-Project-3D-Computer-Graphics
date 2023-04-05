@@ -26,7 +26,6 @@ DISABLE_WARNINGS_POP()
 #include "player.cpp"
 #include <glm/gtx/string_cast.hpp>
 #include "enemy.cpp"
-#include "bullethandler.cpp"
 #include "environment.cpp"
 #include "light.cpp"
 
@@ -63,7 +62,7 @@ class Application {
 		),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		secondaryLight(glm::vec3(0, 10, 0), glm::vec3(-1, -1, 0), glm::vec3(.2, .2, .2)),
-		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/pure_blue.png"),
+		bullethandler("resources/Bullet_Ours/LIGHTSABER.obj", "resources/Bullet_Ours/pure_blue.png", "resources/Bullet_Enemy/pure_red.png"),
 		//ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::mat4{ 1.0f }, glm::vec3(0, 30, 0))),
 		ground("resources/moonsurface/moonsurface.obj", "resources/moonsurface/moon.jpg", glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 1.0 }), glm::vec3(0,20,0)))
 		{
@@ -179,7 +178,8 @@ class Application {
 
 			//shooting
 			if (shooting && shootCooldown <= 0) {
-				bullethandler.createBullet(player.getModelMatrix());
+				bullethandler.createBullet(player.getModelMatrix(), true);
+				enemy1.shootAt(player.getLocation(), bullethandler);
 				shootCooldown = 30;
 			}
 			shootCooldown--;

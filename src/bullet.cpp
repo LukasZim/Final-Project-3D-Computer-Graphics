@@ -14,22 +14,14 @@
 
 class Bullet {
 	public:
-		Bullet(glm::mat4 startMatrix, int speed, int damage, int range):
+		bool friendly;
+		Bullet(glm::mat4 startMatrix, int speed, int damage, int range, bool friendly):
 			speed(speed),
 			damage(damage),
 			range(range),
 			m_modelMatrix(startMatrix)
 		{
-			/*
-			for(int x = 0; x < 4 ; x++){
-				for (int y = 0; y < 4; y++) {
-					float* temp = &(startMatrix[x][y]);
-					m_modelMatrix[x][y] = (*temp);
-
-				}
-			}
-			*/
-
+			this->friendly = friendly;
 		}
 
 		glm::vec3 getLocation() {

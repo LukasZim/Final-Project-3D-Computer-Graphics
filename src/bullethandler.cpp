@@ -2,16 +2,17 @@
 
 class BulletHandler {
 public:
-	BulletHandler(std::string meshpath, std::string texturepath)
+	BulletHandler(std::string allyMeshpath, std::string allyTexturepath, std::string enemyTexturepath)
 		:
-		m_mesh(meshpath),
-		m_texture(texturepath)
+		m_mesh(allyMeshpath),
+		m_texture(allyTexturepath),
+		m_texture_enemy(enemyTexturepath)
 	{
 		bullets = {};
 	}
 
-	void createBullet(glm::mat4 initialMatrix) {
-		Bullet newBullet = Bullet(glm::scale(initialMatrix, glm::vec3(5.0f)), 1, 1, 1);
+	void createBullet(glm::mat4 initialMatrix, bool friendly) {
+		Bullet newBullet = Bullet(glm::scale(initialMatrix, glm::vec3(5.0f)), 1, 1, 1, friendly);
  		bullets.push_back(newBullet);
 	}
 
@@ -23,7 +24,7 @@ public:
 				bullets.erase(i++);
 			}
 			else {
-				(*i).draw(m_projectionMatrix, m_viewMatrix, &m_mesh, &m_texture);
+				(*i).draw(m_projectionMatrix, m_viewMatrix, &m_mesh, (*i).friendly?  & m_texture : &m_texture_enemy);
 				++i;
 			}
 		}
@@ -41,5 +42,6 @@ public:
 private:
 	GPUMesh m_mesh;
 	Texture m_texture;
+	Texture m_texture_enemy;
 	std::list<Bullet> bullets;
 };
