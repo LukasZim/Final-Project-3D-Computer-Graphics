@@ -22,7 +22,7 @@ public:
         m_texture_4(texture4path)
         
     {
-        m_modelMatrix_planet1 = glm::translate(startMatrix, glm::vec3(-300, 500, 500));
+        m_modelMatrix_planet1 = glm::translate(startMatrix, glm::vec3(-300, 350, 500));
         m_modelMatrix_planet2 = glm::translate(m_modelMatrix_planet1, glm::vec3(radius, 0.0f, 0.0f));
         m_modelMatrix_planet3 = glm::translate(m_modelMatrix_planet2, glm::vec3(0.0f, 0.0f , -radius));
         m_modelMatrix_planet4 = glm::translate(m_modelMatrix_planet3, glm::vec3(-radius,  0.0f, 0.0f));
@@ -61,6 +61,11 @@ public:
             glUniform1i(4, GL_FALSE);
         }
         mesh.draw();
+    }
+
+    void drawShadow() {
+        // will never be called, since planets are never in the shadow, if this makes you mad/disappointed,
+        // feel free to implement it yourself :)
     }
 
 private:

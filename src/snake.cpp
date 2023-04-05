@@ -29,6 +29,7 @@ public:
 		updatedModelMatrix = updateModelMatrix(updatedModelMatrix, framecounter, bodyParts);
 
 		drawElement(m_mesh_tail, m_projectionMatrix, m_viewMatrix, updatedModelMatrix, lightMVPTail);
+		lightMVPBodies = {};
 	}
 
 	void shadowDraw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, int framecounter) {
@@ -46,7 +47,7 @@ public:
 
 		lightMVPTail = m_projectionMatrix * m_viewMatrix * updatedModelMatrix;
 		glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVPTail));
-		m_mesh_body.draw();
+		m_mesh_tail.draw();
 	}
 
 	glm::mat4 updateModelMatrix(glm::mat4 m, int framecounter, int offset) {

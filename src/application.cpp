@@ -28,6 +28,7 @@ DISABLE_WARNINGS_POP()
 #include "enemy.cpp"
 #include "environment.cpp"
 #include "snake.cpp"
+#include "planet.cpp"
 
 class Application {
   public:
@@ -60,6 +61,9 @@ class Application {
 			{ 8.0f, 74.0f, 81.0f, 11.0f } ,
 			{ 130.0f, 230.0f, 330.0f, 430.0f }
 		),
+		planets("resources/ceres/ceres.obj", "resources/ficunatus/ficunatus.obj", "resources/jupiter/jupiter.obj", "resources/venus/venus.obj", //4 objs
+			"resources/ceres/ceres.jpg", "resources/ficunatus/ficunatus.jpg", "resources/jupiter/jupiter.jpg", "resources/venus/venus.jpg",      //4 textures    
+			glm::mat4(1.0f)),
 		snake("resources/snake/snake1.obj", "resources/snake/snake2.obj", "resources/snake/snake3.obj", "resources/snake/pure_blue.png", glm::scale(glm::mat4{ 1.0 }, glm::vec3{50.0f})),
 		player("resources/Gunship_model/space-cruiser-panels2_normal-ogl.png", glm::mat4{ 1.0 }),
 		secondaryLight(glm::vec3(0, 10, 0), glm::vec3(-1, -1, 0), glm::vec3(.2, .2, .2)),
@@ -200,6 +204,8 @@ class Application {
 				//m_viewMatrix = shadowViewMatrix;
 			}
 
+			planets.update(0.001, 1.5f, 2.0f);
+
 
 			{
 				// Bind the off-screen framebuffer
@@ -283,6 +289,7 @@ class Application {
 			enemy1.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
 			powerup1.draw(m_projectionMatrix, m_viewMatrix);
 			snake.draw(m_projectionMatrix, m_viewMatrix, framecounter);
+			planets.draw(m_projectionMatrix, m_viewMatrix);
 
 			// Processes input and swaps the window buffer
 			m_window.swapBuffers();
@@ -400,6 +407,7 @@ class Application {
 	Light spotLight;
 	Light secondaryLight;
 	Snake snake;
+	Planet planets;
 
 
 	int shootCooldown = 30;
