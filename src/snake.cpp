@@ -87,7 +87,7 @@ private:
 
 
 	int bodyParts = 10;
-	float bodyLenght = 0.25;
+	float bodyLenght = 0.20;
 
 	Texture m_texture;
 };
