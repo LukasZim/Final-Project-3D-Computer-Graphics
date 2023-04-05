@@ -58,10 +58,24 @@ class Application {
 		enemy1("resources/enemyship/UFO.obj",
 			"resources/enemyship/reinforced-metal_metallic.png", 
 			glm::mat4{ 1.0f }, 
-			500, 
+			2000, 
 			{ 8.0f, 74.0f, 81.0f, 11.0f } ,
 			{ 130.0f, 230.0f, 330.0f, 430.0f }
 		),
+		enemy2("resources/enemyship/UFO.obj",
+			"resources/enemyship/reinforced-metal_metallic.png", 
+			glm::mat4{1.0f},
+			1881,
+			{0.0f, 100.0f, 100.0f, 0.0f},
+			{0.0f, 0.0f, 100.0f, 100.0f}
+			),
+		enemy3("resources/enemyship/UFO.obj",
+			"resources/enemyship/reinforced-metal_metallic.png",
+			glm::mat4{ 1.0f },
+			1914, 
+			{-100.0f, -50.0f, -25.0f, -100.0f},
+			{-23, -98, -11, -11}
+			),
 		robot(glm::translate(glm::scale(glm::mat4{ 1.0 }, glm::vec3{ 20.0 }), glm::vec3(-10, 0, 0))),
 		planets("resources/ceres/ceres.obj", "resources/ficunatus/ficunatus.obj", "resources/jupiter/jupiter.obj", "resources/venus/venus.obj", //4 objs
 			"resources/ceres/ceres.jpg", "resources/ficunatus/ficunatus.jpg", "resources/jupiter/jupiter.jpg", "resources/venus/venus.jpg",      //4 textures    
@@ -232,6 +246,8 @@ class Application {
 				ground.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				bullethandler.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				enemy1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				enemy2.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				enemy3.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				snake.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				robot.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
@@ -286,10 +302,12 @@ class Application {
 			player.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 
 			//m_defaultShader.bind();
-			std::vector<glm::vec3> enemyLocations = { enemy1.getLocation() };
+			std::vector<glm::vec3> enemyLocations = { enemy1.getLocation(), enemy2.getLocation(), enemy3.getLocation()};
 			bullethandler.draw(player.getLocation(), m_projectionMatrix, m_viewMatrix, score, damageTaken, enemyLocations);
 			ground.draw(m_projectionMatrix, m_viewMatrix);
 			enemy1.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
+			enemy2.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
+			enemy3.draw(m_projectionMatrix, m_viewMatrix, player.getLocation(), bullethandler, spotLight);
 			powerup1.draw(m_projectionMatrix, m_viewMatrix);
 			snake.draw(m_projectionMatrix, m_viewMatrix, framecounter);
 			planets.draw(m_projectionMatrix, m_viewMatrix);
@@ -406,6 +424,8 @@ class Application {
 	Powerup powerup1;
 	Player player;
 	Enemy enemy1;
+	Enemy enemy2;
+	Enemy enemy3;
 	BulletHandler bullethandler;
 	Environment ground;
 	Light spotLight;

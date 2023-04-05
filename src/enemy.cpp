@@ -54,7 +54,7 @@ class Enemy {
 
 		void draw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, glm::vec3 playerPos, BulletHandler& bullethandler, Light spotLight) {
 			//m_modelMatrix = glm::translate(glm::rotate(m_modelMatrix, glm::radians((float)1.0f), glm::vec3(0, 1, 0)), glm::vec3(0, 0, 0));
-			m_modelMatrix = glm::translate(glm::mat4{1.0}, glm::vec3(bezier_curve.at(steps / slowDown).first, 0.0f, bezier_curve.at(steps / slowDown).second));
+			m_modelMatrix = glm::translate(glm::mat4{1.0}, glm::vec3(bezier_curve.at(steps ).first, 0.0f, bezier_curve.at(steps).second));
 
 			const glm::mat4 mvpMatrix = m_projectionMatrix * m_viewMatrix * m_modelMatrix;
 			const glm::mat3 normalModelMatrix = glm::inverseTranspose(glm::mat3(m_modelMatrix));
@@ -72,7 +72,22 @@ class Enemy {
 			}
 			glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
 			m_mesh.draw();
-			steps = (steps + 1) % (bezierSteps * slowDown);
+			//steps = (steps + 1) % (bezierSteps);
+			if (increasing) {
+				steps = steps + 1;
+			}
+			else {
+				steps = steps - 1;
+			}
+			if (steps <= 0) {
+				increasing = true;
+			} 
+
+			if (steps == bezierSteps - 1) {
+				increasing = false;
+			}
+
+
 			shootAt(playerPos, bullethandler, spotLight);
 			shootTimer--;
 		}
@@ -100,8 +115,9 @@ class Enemy {
 		Texture m_texture;
 		int steps;
 		int bezierSteps;
-		int slowDown = 1;
 		int shootTimer = 30;
+
+		bool increasing = true;
 
 		//Bezier Curve
 		std::vector<std::pair<float, float>> bezier_curve; //x, y
