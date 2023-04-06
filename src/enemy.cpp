@@ -21,12 +21,12 @@ class Enemy {
 			bezierSteps = movementSteps;
 			steps = 0;
 
-
+			
 			// Bezier Curve
 			int n = x_coor.size();
-			for (float t = 0.0; t < 1.0; t += (float) 1.0f/movementSteps) {
+			for (float t = 0.0; t <= 1.0; t += (float) 1.0f/movementSteps) {
 				
-
+				
 				//float x_coor[4] = { .08,.74,.81,.11 };
 				//float y_coor[4] = { 1.3, 2.3, 3.3, 4.3 };
 				float x_total = 0;
@@ -37,7 +37,7 @@ class Enemy {
 					auto var3 = std::pow(1 - t, n - i);
 					auto var4 = std::pow(t, i);
 					auto var5 = x_coor.at(i);
-					x_total += var1 / var2 * var3 * var4 * var5;
+					x_total += (var1 / var2) * var3 * var4 * var5;
 				}
 				for (int i = 0; i < n; i++) {
 					y_total += factorial(n) / (factorial(i) * factorial(n - i)) * std::pow(1 - t, n - i) * std::pow(t, i) * y_coor.at(i);
