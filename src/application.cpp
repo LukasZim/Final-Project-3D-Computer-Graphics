@@ -273,6 +273,7 @@ class Application {
 				enemy2.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				enemy3.shadowDraw(m_projectionMatrix, shadowViewMatrix);
 				powerup1.shadowDraw(m_projectionMatrix, shadowViewMatrix);
+				planets.drawShadow(m_projectionMatrix, shadowViewMatrix);
 				snake.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				robot.shadowDraw(m_projectionMatrix, shadowViewMatrix, framecounter);
 				//red_glass1.draw(m_projectionMatrix, shadowViewMatrix);

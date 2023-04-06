@@ -31,10 +31,10 @@ public:
     // ... (other existing methods) ...
 
     void draw(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix) {
-        drawPlanet(m_projectionMatrix, m_viewMatrix, m_modelMatrix_planet1, m_mesh_planet1, m_texture_1);
-        drawPlanet(m_projectionMatrix, m_viewMatrix, m_modelMatrix_planet2, m_mesh_planet2, m_texture_2);
-        drawPlanet(m_projectionMatrix, m_viewMatrix, m_modelMatrix_planet3, m_mesh_planet3, m_texture_3);
-        drawPlanet(m_projectionMatrix, m_viewMatrix, m_modelMatrix_planet4, m_mesh_planet4, m_texture_4);
+        drawPlanet(m_projectionMatrix, m_viewMatrix, m_modelMatrix_planet1, m_mesh_planet1, m_texture_1, lightMVP_planet1);
+        drawPlanet(m_projectionMatrix, m_viewMatrix, m_modelMatrix_planet2, m_mesh_planet2, m_texture_2, lightMVP_planet2);
+        drawPlanet(m_projectionMatrix, m_viewMatrix, m_modelMatrix_planet3, m_mesh_planet3, m_texture_3, lightMVP_planet3);
+        drawPlanet(m_projectionMatrix, m_viewMatrix, m_modelMatrix_planet4, m_mesh_planet4, m_texture_4, lightMVP_planet4);
     }
     void update(float Time, float centralRotationSpeed, float selfRotationSpeed) {
         glm::mat4 centralRotationMatrix = glm::rotate(glm::mat4(1.0f), centralRotationSpeed * Time, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -45,7 +45,7 @@ public:
         m_modelMatrix_planet3 = centralRotationMatrix * m_modelMatrix_planet3 * selfRotationMatrix;
         m_modelMatrix_planet4 = centralRotationMatrix * m_modelMatrix_planet4 * selfRotationMatrix;
     }
-    void drawPlanet(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, glm::mat4 modelMatrix, GPUMesh& mesh, Texture& texture) {
+    void drawPlanet(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix, glm::mat4 modelMatrix, GPUMesh& mesh, Texture& texture, glm::mat4 lightMVP) {
         const glm::mat4 mvpMatrixsnake = m_projectionMatrix * m_viewMatrix * modelMatrix;
         const glm::mat3 normalModelMatrixsnake = glm::inverseTranspose(glm::mat3(modelMatrix));
         glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(mvpMatrixsnake));
@@ -60,12 +60,25 @@ public:
         else {
             glUniform1i(4, GL_FALSE);
         }
+        glUniformMatrix4fv(14, 1, GL_FALSE, glm::value_ptr(lightMVP));
         mesh.draw();
     }
 
-    void drawShadow() {
+    void drawShadow(glm::mat4 m_projectionMatrix, glm::mat4 m_viewMatrix) {
         // will never be called, since planets are never in the shadow, if this makes you mad/disappointed,
         // feel free to implement it yourself :)
+        lightMVP_planet1 = m_projectionMatrix * m_viewMatrix * m_modelMatrix_planet1;
+        glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP_planet1));
+        m_mesh_planet1.draw();
+        lightMVP_planet2 = m_projectionMatrix * m_viewMatrix * m_modelMatrix_planet2;
+        glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP_planet2));
+        m_mesh_planet2.draw();
+        lightMVP_planet3 = m_projectionMatrix * m_viewMatrix * m_modelMatrix_planet3;
+        glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP_planet3));
+        m_mesh_planet3.draw();
+        lightMVP_planet4 = m_projectionMatrix * m_viewMatrix * m_modelMatrix_planet4;
+        glUniformMatrix4fv(0, 1, GL_FALSE, glm::value_ptr(lightMVP_planet4));
+        m_mesh_planet4.draw();
     }
 
 private:
@@ -81,5 +94,9 @@ private:
     glm::mat4 m_modelMatrix_planet2;
     glm::mat4 m_modelMatrix_planet3;
     glm::mat4 m_modelMatrix_planet4;
+    glm::mat4 lightMVP_planet1;
+    glm::mat4 lightMVP_planet2;
+    glm::mat4 lightMVP_planet3;
+    glm::mat4 lightMVP_planet4;
     float radius = 800.0f;
 };
